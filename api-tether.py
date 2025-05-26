@@ -76,9 +76,6 @@ def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
     except Exception as e:
         print(f"Proxy is off or error occurred: {e}")
 
-# Usage example:
-proxy_url = "socks5://127.0.0.1:1080"
-send_telegram("Hello with proxy!", test=True, proxy_url=proxy_url)
 
 
 
