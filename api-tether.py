@@ -46,25 +46,23 @@ from telegram import __version__ as TG_VER
 
 import aiohttp
 
-async def send_file(message, TOKEN, CHAT_ID):
-    proxy_url = "socks5://127.0.0.1:1080"
+import asyncio
+from telegram.ext import Application
+from aiohttp_socks import ProxyConnector
 
-    # Create an aiohttp session with SOCKS5 proxy
-    conn = aiohttp.TCPConnector(ssl=False)
-    timeout = aiohttp.ClientTimeout(total=10)
-
-    async with aiohttp.ClientSession(connector=conn, timeout=timeout) as session:
+async def send_file(message, TOKEN, CHAT_ID, proxy_url=None):
+    if proxy_url:
+        connector = ProxyConnector.from_url(proxy_url)
+        app = Application.builder().token(TOKEN).connection_kwargs({"connector": connector}).build()
+    else:
         app = Application.builder().token(TOKEN).build()
-        # Patch bot's aiohttp session with proxy
-        app.bot._http = app.bot._http.replace_session(session=session, proxy=proxy_url)
-        try:
-            await app.bot.send_message(chat_id=CHAT_ID, text=message)
-            print("File sent successfully!")
-        except Exception as e:
-            print(f"Failed to send message: {e}")
 
-def send_telegram(message, test):
-    config = read_config('tokens.txt')
+    async with app:
+        await app.bot.send_message(chat_id=CHAT_ID, text=message)
+        print("File sent successfully!")
+
+def send_telegram(message, test, proxy_url=None):
+    config = read_config('tokens.txt')  # your own config function
 
     if test:
         TOKEN = config['TOKEN_TEST']
@@ -74,9 +72,10 @@ def send_telegram(message, test):
         CHAT_ID = config['CHAT_ID_TETHER']
 
     try:
-        asyncio.run(send_file(message, TOKEN, CHAT_ID))
+        asyncio.run(send_file(message, TOKEN, CHAT_ID, proxy_url))
     except Exception as e:
         print(f"Proxy is off or error occurred: {e}")
+
 
 
 def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth_24,neg_last_growth_24):
