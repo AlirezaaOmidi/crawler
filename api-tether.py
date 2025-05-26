@@ -46,7 +46,28 @@ def read_config(tokens):
 
 import requests
 
+def send_file(token, chat_id, message, proxy=None):
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    data = {
+        "chat_id": chat_id,
+        "text": message
+    }
+    proxies = {
+        "http": proxy,
+        "https": proxy,
+    } if proxy else None
+
+    try:
+        r = requests.post(url, data=data, proxies=proxies, timeout=10)
+        if r.status_code == 200:
+            print("✅ Message sent!")
+        else:
+            print(f"❌ Telegram API error: {r.status_code} {r.text}")
+    except Exception as e:
+        print(f"❌ Request error: {e}")
+
 def send_telegram(message, test):
+
     try:
         proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
         config = read_config('tokens.txt')
@@ -57,12 +78,11 @@ def send_telegram(message, test):
         else:
             TOKEN = config['TOKEN_GOLD']
             CHAT_ID = config['CHAT_ID_GOLD']
-
-        # ✅ Call the function directly (no asyncio)
-        send_file(TOKEN, CHAT_ID, message, proxy=proxy_url)
-
+        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
-        print(f"❌ Could not send message: {e}")
+        print("")
+        # print(f"❌ Could not send message: {e}")
+
 
 def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth_24,neg_last_growth_24):
     config = read_config('tokens.txt')
