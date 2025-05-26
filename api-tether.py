@@ -20,7 +20,7 @@ from telegram.error import TimedOut
 import warnings
 warnings.filterwarnings('ignore')
 import ast
-# from telegram.ext import Application
+from telegram.ext import Application
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 
@@ -42,9 +42,6 @@ def read_config(tokens):
             config[name] = value
     return config
 
-
-
-import requests
 
 def send_file(token, chat_id, message, proxy=None):
     url = f"https://api.telegram.org/bot{token}/sendMessage"
