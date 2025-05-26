@@ -13,6 +13,7 @@ from datetime import datetime
 from datetime import date
 import time
 import psycopg2
+
 import smtplib, ssl
 import jalali_pandas
 import emoji
@@ -41,9 +42,29 @@ def read_config(tokens):
             value = value.strip()
             config[name] = value
     return config
+
+
+
+
 async def send_file(message, TOKEN, CHAT_ID):
     try:
-        bot = Application.builder().token(f"{TOKEN}").build()
+        from telegram import __version__ as TG_VER
+        from telegram.ext import ApplicationBuilder
+        from telegram.utils.request import Request
+
+        # Define your proxy (Xray runs locally on 127.0.0.1:1080)
+        proxy_url = "socks5h://127.0.0.1:1080"
+
+        # Create a Request object with proxy settings
+        request = Request(
+            proxy_url=proxy_url,
+            # If your proxy needs auth, add:
+            # urllib3_proxy_kwargs={"username": "user", "password": "pass"}
+        )
+
+        # Pass the request object when building the Application
+        bot = Application.builder().token(TOKEN).request(request).build()
+
         await bot.updater.bot.send_message(chat_id=CHAT_ID, text=message)
         print("File sent successfully!")
     except TimedOut:
