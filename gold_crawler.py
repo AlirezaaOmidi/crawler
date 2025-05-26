@@ -18,7 +18,7 @@ import emoji
 from telegram.error import TimedOut
 import warnings
 warnings.filterwarnings('ignore')
-from telegram.ext import Application
+# from telegram.ext import Application
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=True
 
