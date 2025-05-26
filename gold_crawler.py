@@ -24,7 +24,7 @@ day_change=True
 
 
 # if need to send message to test chanel
-test = False
+test = True
 n = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
@@ -803,7 +803,7 @@ def goldis(url_goldis, prices, names):
         cookies = {
             "session": ".eJwNy7sNQjEMQNFdMoEd_1kGvTg2BRI0dIjdya3P_Y7H_fN-1mvcRgemgTDbupSsdE09WV8mNrfzohLnAg2b3KtgC1zosDvorNWOl7RWJVJu5GQS8UM2UCtwtJsr5Zww0yLXbkTsjgMDYPz-AS8mxw.aBoVXA.5PTMGRsGAesRmDA4zFr9wm_DSYg"
         }
-        c = requests.get(url_goldis, headers=headers, cookies=cookies,timeout=10)
+        c = requests.get(url_goldis, verify=False, headers=headers, cookies=cookies, timeout=10)
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(c.content, 'html.parser')
         numbers = [span.text for span in soup.find_all("span", class_="fs12 goldColor text-right")]
@@ -823,7 +823,6 @@ def goldis(url_goldis, prices, names):
         prices.append("")
         pass
     return prices, names
-
 
 
 def zarpad(url_zarpad, prices, names):
