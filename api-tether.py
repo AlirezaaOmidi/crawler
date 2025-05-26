@@ -49,17 +49,30 @@ from telegram import Bot
 
 
 import asyncio
-import aiohttp
-from aiohttp_socks import ProxyConnector
+import httpx
 from telegram import Bot
+from telegram.constants import ParseMode
+from telegram.request._httpxrequest import HTTPXRequest  # internal API but works
 
+async def send_file(token, chat_id, message, proxy_url="socks5h://127.0.0.1:1080"):
+    try:
+        # Create an HTTPX client with proxy support
+        client = httpx.AsyncClient(proxies=proxy_url)
 
-async def send_file(message, TOKEN, CHAT_ID, proxy_url="socks5://127.0.0.1:1080"):
-    connector = ProxyConnector.from_url(proxy_url)
-    async with aiohttp.ClientSession(connector=connector) as session:
-        bot = Bot(token=TOKEN, session=session)
-        await bot.send_message(chat_id=CHAT_ID, text=message)
+        # Use HTTPXRequest to inject the custom client into the bot
+        request = HTTPXRequest(http_client=client)
+        bot = Bot(token=token, request=request)
+
+        # Send the message
+        await bot.send_message(chat_id=chat_id, text=message, parse_mode=ParseMode.HTML)
         print("✅ Message sent successfully!")
+    except Exception as e:
+        print(f"❌ Could not send message: {e}")
+    finally:
+        await client.aclose()
+
+
+
 
 
 def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
