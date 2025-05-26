@@ -48,25 +48,14 @@ def read_config(tokens):
 
 async def send_file(message, TOKEN, CHAT_ID):
     try:
-        from telegram import __version__ as TG_VER
-        from telegram.ext import ApplicationBuilder
-        from telegram.utils.request import Request
-
-        # Define your proxy (Xray runs locally on 127.0.0.1:1080)
+        from telegram import Bot
+        # SOCKS5 proxy configuration
         proxy_url = "socks5h://127.0.0.1:1080"
-
-        # Create a Request object with proxy settings
-        request = Request(
-            proxy_url=proxy_url,
-            # If your proxy needs auth, add:
-            # urllib3_proxy_kwargs={"username": "user", "password": "pass"}
-        )
-
-        # Pass the request object when building the Application
-        bot = Application.builder().token(TOKEN).request(request).build()
+        bot = Application.builder().token(TOKEN).get_updates_proxy_url(proxy_url).build()
 
         await bot.updater.bot.send_message(chat_id=CHAT_ID, text=message)
-        print("File sent successfully!")
+        print("Message sent successfully!")
+
     except TimedOut:
         print("proxy is off, it didn't send to telegram")
 
