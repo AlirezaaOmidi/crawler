@@ -50,7 +50,7 @@ import asyncio
 from telegram.ext import Application
 from aiohttp_socks import ProxyConnector
 
-async def send_file(message, TOKEN, CHAT_ID, proxy_url=None):
+async def send_file(message, TOKEN, CHAT_ID, proxy_url="socks5://127.0.0.1:1080"):
     if proxy_url:
         connector = ProxyConnector.from_url(proxy_url)
         app = Application.builder().token(TOKEN).connection_kwargs({"connector": connector}).build()
@@ -61,7 +61,7 @@ async def send_file(message, TOKEN, CHAT_ID, proxy_url=None):
         await app.bot.send_message(chat_id=CHAT_ID, text=message)
         print("File sent successfully!")
 
-def send_telegram(message, test, proxy_url=None):
+def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
     config = read_config('tokens.txt')  # your own config function
 
     if test:
@@ -75,6 +75,10 @@ def send_telegram(message, test, proxy_url=None):
         asyncio.run(send_file(message, TOKEN, CHAT_ID, proxy_url))
     except Exception as e:
         print(f"Proxy is off or error occurred: {e}")
+
+# Usage example:
+proxy_url = "socks5://127.0.0.1:1080"
+send_telegram("Hello with proxy!", test=True, proxy_url=proxy_url)
 
 
 
