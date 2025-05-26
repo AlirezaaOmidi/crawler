@@ -55,27 +55,20 @@ from telegram.constants import ParseMode
 from telegram.request._httpxrequest import HTTPXRequest  # internal API but works
 
 async def send_file(token, chat_id, message, proxy_url="socks5h://127.0.0.1:1080"):
+    client = None
     try:
-        # Create an HTTPX client with proxy support
         client = httpx.AsyncClient(proxies=proxy_url)
-
-        # Use HTTPXRequest to inject the custom client into the bot
         request = HTTPXRequest(http_client=client)
         bot = Bot(token=token, request=request)
-
-        # Send the message
-        await bot.send_message(chat_id=chat_id, text=message, parse_mode=ParseMode.HTML)
+        await bot.send_message(chat_id=chat_id, text=message)
         print("✅ Message sent successfully!")
     except Exception as e:
         print(f"❌ Could not send message: {e}")
     finally:
-        await client.aclose()
+        if client:
+            await client.aclose()
 
-
-
-
-
-def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
+def send_telegram(message, test, proxy_url="socks5h://127.0.0.1:1080"):
     config = read_config('tokens.txt')  # This should return a dictionary
 
     TOKEN = config['TOKEN_TEST'] if test else config['TOKEN_TETHER']
