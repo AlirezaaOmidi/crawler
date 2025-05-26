@@ -44,24 +44,41 @@ def read_config(tokens):
 
 
 
-import asyncio
-from aiohttp import ClientSession
-from aiohttp_socks import ProxyConnector
+import requests
 
-
-async def send_file(token, chat_id, message, proxy_url="socks5://127.0.0.1:1080"):
-    connector = ProxyConnector.from_url(proxy_url)
-    async with ClientSession(connector=connector) as session:
-        print("✅ Message sent successfully!")
-
-def send_telegram(message, test):
-    config = read_config('tokens.txt')  # your function returning dict with tokens & chat_ids
-
-    TOKEN = config['TOKEN_TEST'] if test else config['TOKEN_TETHER']
-    CHAT_ID = config['CHAT_ID_TEST'] if test else config['CHAT_ID_TETHER']
+def send_file(token, chat_id, message, proxy=None):
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    data = {
+        "chat_id": chat_id,
+        "text": message
+    }
+    proxies = {
+        "http": proxy,
+        "https": proxy,
+    } if proxy else None
 
     try:
-        asyncio.run(send_file(TOKEN, CHAT_ID, message))
+        r = requests.post(url, data=data, proxies=proxies, timeout=10)
+        if r.status_code == 200:
+            print("✅ Message sent!")
+        else:
+            print(f"❌ Telegram API error: {r.status_code} {r.text}")
+    except Exception as e:
+        print(f"❌ Request error: {e}")
+
+def send_telegram(message, test):
+
+    try:
+        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+        config = read_config('tokens.txt')
+
+        if test:
+            TOKEN = config['TOKEN_TEST']
+            CHAT_ID = config['CHAT_ID_TEST']
+        else:
+            TOKEN = config['TOKEN_GOLD']
+            CHAT_ID = config['CHAT_ID_GOLD']
+        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print(f"❌ Could not send message: {e}")
 
