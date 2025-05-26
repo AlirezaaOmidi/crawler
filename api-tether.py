@@ -14,9 +14,9 @@ from datetime import date
 import time
 import psycopg2
 import smtplib, ssl
-# import jalali_pandas
+import jalali_pandas
 import emoji
-# from telegram.error import TimedOut
+from telegram.error import TimedOut
 import warnings
 warnings.filterwarnings('ignore')
 import ast
