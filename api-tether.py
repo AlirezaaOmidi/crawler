@@ -47,38 +47,28 @@ import aiohttp
 from aiohttp_socks import ProxyConnector
 from telegram import Bot
 
-
 import asyncio
-import httpx
-from telegram import Bot
-from telegram.constants import ParseMode
-from telegram.request._httpxrequest import HTTPXRequest  # internal API but works
+from aiohttp import ClientSession
+from aiohttp_socks import ProxyConnector
+from telegram import Bot, ParseMode
 
-async def send_file(token, chat_id, message, proxy_url="socks5h://127.0.0.1:1080"):
-    client = None
-    try:
-        client = httpx.AsyncClient(proxies=proxy_url)
-        request = HTTPXRequest(http_client=client)
-        bot = Bot(token=token, request=request)
-        await bot.send_message(chat_id=chat_id, text=message)
+async def send_file(token, chat_id, message, proxy_url="socks5://127.0.0.1:1080"):
+    connector = ProxyConnector.from_url(proxy_url)
+    async with ClientSession(connector=connector) as session:
+        bot = Bot(token=token, session=session)
+        await bot.send_message(chat_id=chat_id, text=message, parse_mode=ParseMode.HTML)
         print("✅ Message sent successfully!")
-    except Exception as e:
-        print(f"❌ Could not send message: {e}")
-    finally:
-        if client:
-            await client.aclose()
 
-def send_telegram(message, test, proxy_url="socks5h://127.0.0.1:1080"):
-    config = read_config('tokens.txt')  # This should return a dictionary
+def send_telegram(message, test):
+    config = read_config('tokens.txt')  # your function returning dict with tokens & chat_ids
 
     TOKEN = config['TOKEN_TEST'] if test else config['TOKEN_TETHER']
     CHAT_ID = config['CHAT_ID_TEST'] if test else config['CHAT_ID_TETHER']
 
     try:
-        asyncio.run(send_file(message, TOKEN, CHAT_ID, proxy_url))
+        asyncio.run(send_file(TOKEN, CHAT_ID, message))
     except Exception as e:
         print(f"❌ Could not send message: {e}")
-
 
 
 def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth_24,neg_last_growth_24):
