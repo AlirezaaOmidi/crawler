@@ -47,15 +47,7 @@ import aiohttp
 from aiohttp_socks import ProxyConnector
 from telegram import Bot
 
-import asyncio
-import httpx
 
-async def test_proxy():
-    async with httpx.AsyncClient(proxies="socks5://127.0.0.1:1080") as client:
-        r = await client.get('https://api.telegram.org')
-        print(r.status_code)
-
-asyncio.run(test_proxy())
 import asyncio
 import httpx
 from telegram import Bot
