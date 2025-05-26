@@ -42,43 +42,22 @@ def read_config(tokens):
             config[name] = value
     return config
 
-from telegram import __version__ as TG_VER
-
-import aiohttp
-
 import asyncio
-from telegram.ext import Application
+import aiohttp
 from aiohttp_socks import ProxyConnector
-
-import asyncio
-import aiohttp
-from telegram.ext import Application
 from telegram import Bot
-from aiohttp_socks import ProxyConnector  # install with: pip install aiohttp_socks
 
-
-import asyncio
-import aiohttp
-from aiohttp_socks import ProxyConnector  # pip install aiohttp_socks
-from telegram import Bot
 
 async def send_file(message, TOKEN, CHAT_ID, proxy_url="socks5://127.0.0.1:1080"):
-    # Create an aiohttp session with SOCKS5 proxy
     connector = ProxyConnector.from_url(proxy_url)
-    session = aiohttp.ClientSession(connector=connector)
-
-    bot = Bot(token=TOKEN, session=session)
-
-    try:
+    async with aiohttp.ClientSession(connector=connector) as session:
+        bot = Bot(token=TOKEN, session=session)
         await bot.send_message(chat_id=CHAT_ID, text=message)
         print("✅ Message sent successfully!")
-    except Exception as e:
-        print(f"❌ Proxy failed or error occurred: {e}")
-    finally:
-        await session.close()
+
 
 def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
-    config = read_config('tokens.txt')  # your existing config reader
+    config = read_config('tokens.txt')  # This should return a dictionary
 
     TOKEN = config['TOKEN_TEST'] if test else config['TOKEN_TETHER']
     CHAT_ID = config['CHAT_ID_TEST'] if test else config['CHAT_ID_TETHER']
@@ -87,7 +66,6 @@ def send_telegram(message, test, proxy_url="socks5://127.0.0.1:1080"):
         asyncio.run(send_file(message, TOKEN, CHAT_ID, proxy_url))
     except Exception as e:
         print(f"❌ Could not send message: {e}")
-
 
 
 
