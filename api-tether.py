@@ -14,13 +14,13 @@ from datetime import date
 import time
 import psycopg2
 import smtplib, ssl
-import jalali_pandas
+# import jalali_pandas
 import emoji
-from telegram.error import TimedOut
+# from telegram.error import TimedOut
 import warnings
 warnings.filterwarnings('ignore')
 import ast
-from telegram.ext import Application
+# from telegram.ext import Application
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 
@@ -41,6 +41,12 @@ def read_config(tokens):
             value = value.strip()
             config[name] = value
     return config
+
+import asyncio
+import aiohttp
+from aiohttp_socks import ProxyConnector
+from telegram import Bot
+
 
 import asyncio
 import aiohttp
