@@ -603,13 +603,13 @@ def aban(url_aban, prices, names):
 async def ap(url_ap, prices, names):
     try:
         names.append('ap')
-        async with websockets.connect(url_ap,verify=False) as websocket:
+        async with websockets.connect(url_ap) as websocket:
             message = {
                 "channel": "markets",
                 "model": "all",
                 "request": "SUBSCRIBE"
             }
-            await asyncio.wait_for(websocket.send(json.dumps(message)),verify=False, timeout=10)
+            await asyncio.wait_for(websocket.send(json.dumps(message)), timeout=10)
 
             # Adding timeout to receiving data
             json_data = await asyncio.wait_for(websocket.recv(), timeout=10)

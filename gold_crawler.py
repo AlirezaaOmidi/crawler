@@ -653,7 +653,7 @@ async def ap(url_ap, prices, names):
                 "model": "all",
                 "request": "SUBSCRIBE"
             }
-            await websocket.send(json.dumps(message),verify=False)
+            await websocket.send(json.dumps(message))
             json_data = await websocket.recv()
             data = json.loads(json_data)
             ap_price = next((market['open'] for market in data['message']['markets'] if market['market'] == 'goldirr'),
@@ -772,7 +772,7 @@ def digikala(url_digikala, prices, names):
             # ... (include all necessary cookies here)
             "ab_test_experiments": "%5B%22229ea1a233356b114984cf9fa2ecd3ff%22%2C%224905b18f64695e6dbfd739d20a4ae2c0%22%2C%22f0fd80107233fa604679779d7e121710%22%2C%2237136fdc21e0b782211ccac8c2d7be63%22%5D"
         }
-        response = requests.get(url_digikala, headers=headers, cookies=cookies,verify=False,timeout=10)
+        response = requests.get(url_digikala, headers=headers, cookies=cookies,timeout=10)
         data = response.json()
         digikala_price = data['gold18']['price']
         if len(str(digikala_price)) != 7:
@@ -803,7 +803,7 @@ def goldis(url_goldis, prices, names):
         cookies = {
             "session": ".eJwNy7sNQjEMQNFdMoEd_1kGvTg2BRI0dIjdya3P_Y7H_fN-1mvcRgemgTDbupSsdE09WV8mNrfzohLnAg2b3KtgC1zosDvorNWOl7RWJVJu5GQS8UM2UCtwtJsr5Zww0yLXbkTsjgMDYPz-AS8mxw.aBoVXA.5PTMGRsGAesRmDA4zFr9wm_DSYg"
         }
-        c = requests.get(url_goldis, verify=False, headers=headers, cookies=cookies,timeout=10)
+        c = requests.get(url_goldis, headers=headers, cookies=cookies,timeout=10)
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(c.content, 'html.parser')
         numbers = [span.text for span in soup.find_all("span", class_="fs12 goldColor text-right")]
@@ -875,7 +875,7 @@ def zarpad(url_zarpad, prices, names):
 def goldika(url_goldika, prices, names):
     try:
         names.append('goldika')
-        f = requests.get(url_goldikaverify=False, timeout=10)
+        f = requests.get(url_goldika, timeout=10)
         data_goldika = json.loads(f.text)
         df_goldika = pd.json_normalize(data_goldika)
         goldika_buy_price = df_goldika['data.price.buy']
