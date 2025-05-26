@@ -42,21 +42,16 @@ def read_config(tokens):
             config[name] = value
     return config
 
-import asyncio
-import aiohttp
-from aiohttp_socks import ProxyConnector
-from telegram import Bot
+
 
 import asyncio
 from aiohttp import ClientSession
 from aiohttp_socks import ProxyConnector
-from telegram import Bot, ParseMode
+
 
 async def send_file(token, chat_id, message, proxy_url="socks5://127.0.0.1:1080"):
     connector = ProxyConnector.from_url(proxy_url)
     async with ClientSession(connector=connector) as session:
-        bot = Bot(token=token, session=session)
-        await bot.send_message(chat_id=chat_id, text=message, parse_mode=ParseMode.HTML)
         print("✅ Message sent successfully!")
 
 def send_telegram(message, test):
