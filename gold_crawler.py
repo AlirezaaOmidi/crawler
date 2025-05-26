@@ -281,6 +281,37 @@ def sqlData(new_line):
     cursor.close()
     conn.close()
 
+    con = sqlite3.connect(database_gold)
+    cursor = con.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS gold_data
+                             (id TEXT,
+                              hour text
+                              Time Text,
+                              talasea INTEGER,
+                              miligold INTEGER,
+                              tlyn INTEGER,
+                              daric INTEGER,
+                              talapp INTEGER,
+                              estjt INTEGER,
+                              ap INTEGER,
+                              TGJU INTEGER,
+                              melli INTEGER,
+                              wallgold INTEGER,
+                              technogold INTEGER,
+                              digikala INTEGER,
+                              zarpad INTEGER,
+                              goldis INTEGER,
+                              goldika INTEGER,                          
+                              bazaretala INTEGER,
+                              ounce INTEGER,
+                              dollar INTEGER,
+                              dollar_based INTEGER,
+                              coin INTEGER,
+                              bubble_coin INTEGER)''')
+    cursor.execute("INSERT INTO gold_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new_line)
+    con.commit()
+    con.close()
+
 
 def history(n):
     # this function should used when whole app started in the middle of a day or when it's working and yet day has not changed
@@ -1499,21 +1530,21 @@ while True:
                 days_history_24, hours_history_1 = "", ""
                 days_history_24, hours_history_1 = history(n)
                 Times_hour_last = Times_hour
-                # try:
-                #     if Times_hour == '01':
-                #         repo_path = os.getcwd()
-                #         file_to_add = repo_path + '\\' + 'gold_price_data.db'
-                #
-                #         commit_message = f'Add file to repository at {df_jalalidate[-1]}'
-                #         os.chdir(repo_path)
-                #         # subprocess.run(['git', 'add', file_to_add])
-                #         subprocess.run(['git', 'pull'])
-                #         subprocess.run(['git', 'add', "--all"])
-                #         subprocess.run(['git', 'add', "--all"])
-                #         subprocess.run(['git', 'commit', '-m', commit_message])
-                #         subprocess.run(['git', 'push'])
-                # except Exception as e:
-                #     print('github error, ',e)
+                try:
+                    if Times_hour == '01':
+                        repo_path = os.getcwd()
+                        file_to_add = repo_path + '\\' + 'gold_price_data.db'
+
+                        commit_message = f'Add file to repository at {df_jalalidate[-1]}'
+                        os.chdir(repo_path)
+                        # subprocess.run(['git', 'add', file_to_add])
+                        subprocess.run(['git', 'pull'])
+                        subprocess.run(['git', 'add', "--all"])
+                        subprocess.run(['git', 'add', "--all"])
+                        subprocess.run(['git', 'commit', '-m', commit_message])
+                        subprocess.run(['git', 'push'])
+                except Exception as e:
+                    print('github error, ',e)
 
                 # The use of checking the time before checking the day is that, getting the last hour information, when the day doesn't change, is on different based than when it does.
                 if jalali_date_last !=  day:  #when days change

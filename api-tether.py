@@ -277,6 +277,28 @@ def sqlData (new_line):
     conn.close()
 
 
+    con=sqlite3.connect(database_tether)
+    cursor=con.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
+                         (id TEXT,
+                          hour text,
+                          Time Text,
+                          nobitex INTEGER,
+                          wallex INTEGER,
+                          tabdeal INTEGER,
+                          ramzinex INTEGER,
+                          exir INTEGER,
+                          tetherland INTEGER,
+                          ok_ex INTEGER
+                          aban INTEGER,
+                          ap INTEGER,
+                          bitpin INTEGER)
+                          ''')
+    cursor.execute("INSERT INTO tether_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",new_line)
+    con.commit()
+    con.close()
+
+
 def history(n):
     conn = psycopg2.connect(
         dbname='mydb',
@@ -959,20 +981,20 @@ while True:
                 print('Times_hour')
                 print('Times_hour_last')
 
-                # try:
-                #     if Times_hour=='12':
-                #         repo_path = os.getcwd()
-                #         file_to_add = repo_path + '\\' + 'tether_price_data.db'
-                #
-                #         commit_message = f'Add file to repository at {df_jalalidate[-1]}'
-                #         os.chdir(repo_path)
-                #         # subprocess.run(['git', 'add', file_to_add])
-                #         subprocess.run(['git', 'pull'])
-                #         subprocess.run(['git', 'add', "--all"])
-                #         subprocess.run(['git', 'commit', '-m', commit_message])
-                #         subprocess.run(['git', 'push'])
-                # except Exception as e:
-                #     print('github error, ', e)
+                try:
+                    if Times_hour=='12':
+                        repo_path = os.getcwd()
+                        file_to_add = repo_path + '\\' + 'tether_price_data.db'
+
+                        commit_message = f'Add file to repository at {df_jalalidate[-1]}'
+                        os.chdir(repo_path)
+                        # subprocess.run(['git', 'add', file_to_add])
+                        subprocess.run(['git', 'pull'])
+                        subprocess.run(['git', 'add', "--all"])
+                        subprocess.run(['git', 'commit', '-m', commit_message])
+                        subprocess.run(['git', 'push'])
+                except Exception as e:
+                    print('github error, ', e)
                 # The use of checking the time before checking the day is that, getting the last hour information, when the day doesn't change, is on different based than when it does.
                 if jalali_date_last !=  day:  #when days change
                     print('day changed')
