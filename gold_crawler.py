@@ -818,7 +818,7 @@ def digikala(url_digikala, prices, names):
             # ... (include all necessary cookies here)
             "ab_test_experiments": "%5B%22229ea1a233356b114984cf9fa2ecd3ff%22%2C%224905b18f64695e6dbfd739d20a4ae2c0%22%2C%22f0fd80107233fa604679779d7e121710%22%2C%2237136fdc21e0b782211ccac8c2d7be63%22%5D"
         }
-        response = requests.get(url_digikala, headers=headers, cookies=cookies,timeout=10)
+        response = requests.get(url_digikala, headers=headers, cookies=cookies,verify=False,timeout=10)
         match = re.search(r'({.*})', response.text)
         json_str = match.group(1)
         data = json.loads(json_str)
