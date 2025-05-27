@@ -340,7 +340,7 @@ def history(n):
         )
         cur = conn.cursor()
 
-        cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 15000")  # Assuming 'id' is still your first column
+        cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
         rows = cur.fetchall()
         column_names = [desc[0] for desc in cur.description]
 
@@ -390,9 +390,10 @@ def history(n):
         days_history2.iloc[:, 3:-5] = days_history2.iloc[:, 3:-5].replace('', temp_mean)
         try:
             today_max,today_min=days_history2.iloc[:, 3:-5].mean(axis=1).max(),days_history2.iloc[:, 3:-5].mean(axis=1).min()
-            highest_time = days_history2.loc[days_history2.iloc[:, 3:-5].mean(axis=1).idxmax(), 'Time']
-            lowest_time = days_history2.loc[days_history2.iloc[:, 3:-5].mean(axis=1).idxmin(), 'Time']
-        except:
+            highest_time = days_history2.loc[days_history2.iloc[:, 3:-5].mean(axis=1).idxmax(), 'time']
+            lowest_time = days_history2.loc[days_history2.iloc[:, 3:-5].mean(axis=1).idxmin(), 'time']
+        except Exception as e:
+            print(e)
             today_max, today_min, highest_time, lowest_time = "", "", "", ""
         hours_history = days_history2.groupby('hour')
         last_two_hours = list(hours_history.groups.keys())[-2:]
@@ -466,7 +467,7 @@ def history2():
     )
     cur = conn.cursor()
 
-    cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 15000")  # Assuming 'id' is still your first column
+    cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
     rows = cur.fetchall()
     column_names = [desc[0] for desc in cur.description]
 
@@ -1735,12 +1736,13 @@ while True:
             bubble_coin = int(coin_price_copy) - coin_value
             bubble_coin_copy =int(bubble_coin)
             try:
-                bubble_coin_situ = situ(bubble_coin, int(days_history_24['coin_bubble']))
-                bubble_coin_dif = np.round(((bubble_coin - days_history_24['coin_bubble']) / days_history_24['coin_bubble']) * 100,
+                bubble_coin_situ = situ(bubble_coin, int(days_history_24['bubble_coin']))
+                bubble_coin_dif = np.round(((bubble_coin - days_history_24['bubble_coin']) / days_history_24['bubble_coin']) * 100,
                                            2)
                 if abs(bubble_coin_dif) < 0.01:
                     bubble_coin_dif = "0.00"
-            except :
+            except Exception as e:
+                print(e)
                 bubble_coin_situ=emoji.emojize(':radio_button:') + " "
                 bubble_coin_dif=""
 

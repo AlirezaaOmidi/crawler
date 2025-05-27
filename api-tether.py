@@ -324,7 +324,7 @@ def history(n):
         port='5432'
     )
     cur = conn.cursor()
-    cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 50000")
+    cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 80000")
     rows = cur.fetchall()
     column_names = [desc[0] for desc in cur.description]
 
@@ -367,8 +367,8 @@ def history(n):
     try:
         today_max, today_min = days_history2.iloc[:, 3:].mean(axis=1).max(), days_history2.iloc[:, 3:].mean(
             axis=1).min()
-        highest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmax(),'Time']
-        lowest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmin(),'Time']
+        highest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmax(),'time']
+        lowest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmin(),'time']
     except:
         today_max, today_min,highest_time ,lowest_time= "", "","", ""
     hours_history = days_history2.groupby('hour')
@@ -434,7 +434,7 @@ def history2():
         port='5432'
     )
     cur = conn.cursor()
-    cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 50000")
+    cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 80000")
     rows = cur.fetchall()
     column_names = [desc[0] for desc in cur.description]
 
