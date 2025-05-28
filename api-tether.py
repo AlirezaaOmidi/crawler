@@ -165,11 +165,15 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
     up   =   emoji.emojize(":up_arrow:")
     right = emoji.emojize(":right_arrow:")
     left = emoji.emojize(":left_arrow:")
-    dollar = emoji.emojize(":heavy_dollar_sign:")
     reminder = emoji.emojize(":pushpin:")
     white = emoji.emojize(":white_small_square:")
     black = emoji.emojize(":black_small_square:")
-    dollar=""
+
+
+    if len (now_mean)<7:
+        dollar = emoji.emojize(":heavy_dollar_sign:")
+    else:
+        dollar = ""
 
     if len(rank_list)>0:
         num0=f'{coin} {rank_name_list[0]} :\n{rank_list[0]}              {situ_list[0]} {rank_dif_list[0]} %\n\n'
