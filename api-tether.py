@@ -73,8 +73,8 @@ def send_telegram(message, test):
             TOKEN = config['TOKEN_TEST']
             CHAT_ID = config['CHAT_ID_TEST']
         else:
-            TOKEN = config['TOKEN_GOLD']
-            CHAT_ID = config['CHAT_ID_GOLD']
+            TOKEN = config['TOKEN_TETHER']
+            CHAT_ID = config['CHAT_ID_TETHER']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
