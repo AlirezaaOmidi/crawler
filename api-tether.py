@@ -25,7 +25,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 
 # if need to send message to test chanel vvv
-test = True
+test = False
 n = 0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
