@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import os
 import subprocess
+import traceback
 from bs4 import BeautifulSoup
 import numpy as np
 import websockets
@@ -62,6 +63,10 @@ def send_file(token, chat_id, message, proxy=None):
             print(f"❌ Telegram API error: {r.status_code} {r.text}")
     except Exception as e:
         print(f"❌ Request error: {e}")
+        try:
+            requests.post(url, data=data, timeout=10)
+        except:
+            print("")
 
 def send_telegram(message, test):
 
@@ -80,8 +85,81 @@ def send_telegram(message, test):
         print("")
         # print(f"❌ Could not send message: {e}")
 
+def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test):
+    prohibited = emoji.emojize(":warning:")
+    pos_neg_sign24 = ""
+    pos_neg_sign1 = ""
+    if positive24 == True:
+        pos_neg_sign24 = '+'
+    if positive24 == False:
+        pos_neg_sign24 = ''
+    if positive1 == True:
+        pos_neg_sign1 = '+'
+    if positive1 == False:
+        pos_neg_sign1 = ''
+    clock = emoji.emojize(':alarm_clock:')
+    calendar = emoji.emojize(":spiral_calendar:")
+    coin = emoji.emojize("")
+    down = emoji.emojize(":down_arrow:")
+    up = emoji.emojize(":up_arrow:")
+    right = emoji.emojize(":right_arrow:")
+    left = emoji.emojize(":left_arrow:")
+    reminder = emoji.emojize(":pushpin:")
+    white = emoji.emojize(":white_small_square:")
+    black = emoji.emojize(":black_small_square:")
+    if len (now_mean)<7:
+        dollar = emoji.emojize(":heavy_dollar_sign:")
+    else:
+        dollar = ""
+    print('pos_neg_sign24',pos_neg_sign24)
+    print('pos_neg_sign1',pos_neg_sign1)
+    pos_neg_sign24_situ= emoji.emojize(':green_circle:') + " "
+    if pos_neg_sign24=="":
+        pos_neg_sign24_situ= emoji.emojize(':red_circle:') + " "
+    pos_neg_sign1_situ=  emoji.emojize(':green_circle:') + " "
+    if pos_neg_sign1=="":
+        pos_neg_sign1_situ=emoji.emojize(':red_circle:') + " "
+    message =   (
+                 # f'{prohibited} میانگین نرخ دلار:  {now_mean} تومان {growth_24_situ}\n\n'
+                f'{prohibited} میانگین نرخ دلار:  {now_mean} تومان \n\n'
+                f'درصد تغییرات 24 ساعته دلار\n'
+                f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
+                f'درصد تغییرات 1 ساعته دلار\n'
+                f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
+                 f'_______________________  \n\n'
+                 f'{black} حداکثر و حداقل قیمت امروز:\n\n'
+                 f'              {up} {highest_price}          AT: {highest_time}\n\n'
+                 f'              {down} {lowest_price}          AT: {lowest_time}\n\n'
+                 f'_______________________  \n'
+                 f'                     {calendar}  {(jalali_date)}\n\n'
+                 f'                           {clock}  {Times_min}\n'
+                 f'\n'
+                 f'@alarm_change'
+                 )
 
-def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth_24,neg_last_growth_24):
+    # message = message.encode('utf-8')
+    message = message.replace("]", "")
+    message = message.replace("[", "")
+    message = message.replace("'", "")
+    try:
+        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+        config = read_config('tokens.txt')
+
+        if test:
+            TOKEN = config['TOKEN_TEST']
+            CHAT_ID = config['CHAT_ID_TEST']
+        else:
+            TOKEN = config['TOKEN_TETHER']
+            CHAT_ID = config['CHAT_ID_ALARM']
+        TOKEN = config['TOKEN_TETHER']
+        CHAT_ID = config['CHAT_ID_ALARM']
+        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+    except Exception as e:
+        print("")
+        # print(f"❌ Could not send message: {e}")
+
+
+def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth_24,neg_last_growth_24,growth_24,growth_1):
     config = read_config('tokens.txt')
     port = 465  # For SSL
     smtp_server = "smtp.gmail.com"
@@ -1195,30 +1273,46 @@ while True:
         Email_send = False
         positive24 = False
         positive1 = False
-        alarm = 1
+        alarm = 0.5
         if n == 1:
             first_time=True
 
         try:
             if first_time == True or day_change == True:
-                if growth_24 > 0:
-                    pos_last_growth_24 = growth_24
-                    pos_last_growth_1 = growth_1
-                if growth_24 < 0:
-                    neg_last_growth_24 = growth_24
-                    neg_last_growth_1 = growth_1
+                if float(growth_24) >= 0:
+                    pos_last_growth_24 = float(growth_24)
+                if float(growth_1) >= 0:
+                    pos_last_growth_1 = float(growth_1)
+                if float(growth_24) < 0:
+                    neg_last_growth_24 = float(growth_24)
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
             first_time = False
             try:
-                if growth_24 - pos_last_growth_24 >= alarm:
-                    if growth_24 >= 0:
+                if (float(growth_24) - pos_last_growth_24 >= alarm) or (float(growth_1) - pos_last_growth_1 >= alarm):
+                    if float(growth_24) >= 0:
                         positive24 = True
-                    if growth_1 >= 0:
+                        neg_last_growth_24 = 0
+                    if float(growth_1) >= 0:
                         positive1 = True
+                        neg_last_growth_1 = 0
+
                     pos_last_growth_24 += alarm
                     pos_last_growth_1 += alarm
+
+
+
                     Email_send = True
 
-                if growth_24 - neg_last_growth_24 < -alarm:
+                if (float(growth_24) - neg_last_growth_24 < -alarm) or (float(growth_1) - neg_last_growth_1 < -alarm):
+                    if float(growth_24) >= 0:
+                        positive24 = True
+                    else:
+                        pos_last_growth_24 = 0
+                    if float(growth_1) >= 0:
+                        positive1 = True
+                    else:
+                        pos_last_growth_1 = 0
                     neg_last_growth_24 += -alarm
                     neg_last_growth_1 += -alarm
                     Email_send = True
@@ -1228,12 +1322,14 @@ while True:
                 print('last pos (1), ', round(neg_last_growth_1,2))
             except Exception as e:
                 print("Email Alarm erorr is : ", e)
+                traceback.print_exc()
             day_change = False
             if Email_send == True:
-
-                Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24)
+                send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
+                # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
         except Exception as e:
             print('Sending Alaram failed because', e.message)
+            traceback.print_exc()
 
         try:
             message = message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, rank_dif_list, rank_list,
@@ -1265,6 +1361,7 @@ while True:
     except Exception as e:
         n += 1
         print('all problem is, ', e)
+        traceback.print_exc()
         print('time_next', time_next)
         if int(time_next) > 0:
             print(f'one losed, sleep for {time_next} sec')
