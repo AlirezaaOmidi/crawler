@@ -8,6 +8,7 @@ import subprocess
 from bs4 import BeautifulSoup
 import numpy as np
 import websockets
+import traceback
 import asyncio
 from datetime import datetime
 from datetime import date
@@ -59,6 +60,10 @@ def send_file(token, chat_id, message, proxy=None):
             print(f"❌ Telegram API error: {r.status_code} {r.text}")
     except Exception as e:
         print(f"❌ Request error: {e}")
+        try:
+            requests.post(url, data=data, timeout=10)
+        except:
+            print("")
 
 def send_telegram(message, test):
 
@@ -72,6 +77,125 @@ def send_telegram(message, test):
         else:
             TOKEN = config['TOKEN_GOLD']
             CHAT_ID = config['CHAT_ID_GOLD']
+        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+    except Exception as e:
+        print("")
+        # print(f"❌ Could not send message: {e}")
+
+
+def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test):
+    prohibited = emoji.emojize(":warning:")
+    pos_neg_sign24 = ""
+    pos_neg_sign1 = ""
+    if positive24 == True:
+        pos_neg_sign24 = '+'
+    if positive24 == False:
+        pos_neg_sign24 = ''
+    if positive1 == True:
+        pos_neg_sign1 = '+'
+    if positive1 == False:
+        pos_neg_sign1 = ''
+    clock = emoji.emojize(':alarm_clock:')
+    calendar = emoji.emojize(":spiral_calendar:")
+    coin = emoji.emojize("")
+    down = emoji.emojize(":down_arrow:")
+    up = emoji.emojize(":up_arrow:")
+    right = emoji.emojize(":right_arrow:")
+    left = emoji.emojize(":left_arrow:")
+    reminder = emoji.emojize(":pushpin:")
+    white = emoji.emojize(":white_small_square:")
+    black = emoji.emojize(":black_small_square:")
+    print('pos_neg_sign24',pos_neg_sign24)
+    print('pos_neg_sign1',pos_neg_sign1)
+    pos_neg_sign24_situ= emoji.emojize(':green_circle:') + " "
+    if pos_neg_sign24=="":
+        pos_neg_sign24_situ= emoji.emojize(':red_circle:') + " "
+    pos_neg_sign1_situ=  emoji.emojize(':green_circle:') + " "
+    if pos_neg_sign1=="":
+        pos_neg_sign1_situ=emoji.emojize(':red_circle:') + " "
+    message =   (
+                 # f'{prohibited} میانگین نرخ طلا:  {now_mean} تومان {growth_24_situ}\n\n'
+                f'{prohibited} میانگین نرخ طلا:  {now_mean} تومان \n\n'
+                f'درصد تغییرات 24 ساعته طلا\n'
+                f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
+                f'درصد تغییرات 1 ساعته طلا\n'
+                f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
+                 f'_______________________  \n\n'
+                 f'{black} حداکثر و حداقل قیمت امروز:\n\n'
+               f'          {up} {highest_price}           AT: {highest_time}\n\n'
+               f'          {down} {lowest_price}           AT: {lowest_time}\n\n'
+                 f'_______________________  \n'
+                 f'                     {calendar}  {(jalali_date)}\n\n'
+                 f'                           {clock}  {Times_min}\n'
+                 f'\n'
+                 f'@alarm_change'
+                 )
+
+    # message = message.encode('utf-8')
+    message = message.replace("]", "")
+    message = message.replace("[", "")
+    message = message.replace("'", "")
+    try:
+        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+        config = read_config('tokens.txt')
+
+        TOKEN = config['TOKEN_GOLD']
+        if test:
+            CHAT_ID = config['CHAT_ID_ALARM_test']
+        else:
+            CHAT_ID = config['CHAT_ID_ALARM']
+        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+    except Exception as e:
+        print("")
+        # print(f"❌ Could not send message: {e}")
+
+
+def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
+    prohibited = emoji.emojize(":warning:")
+    pos_neg_sign24_ounce_price = ""
+    if positive24_ounce_price == True:
+        pos_neg_sign24_ounce_price = '+'
+    if positive24_ounce_price == False:
+        pos_neg_sign24_ounce_price = ''
+    clock = emoji.emojize(':alarm_clock:')
+    calendar = emoji.emojize(":spiral_calendar:")
+    coin = emoji.emojize("")
+    down = emoji.emojize(":down_arrow:")
+    up = emoji.emojize(":up_arrow:")
+    right = emoji.emojize(":right_arrow:")
+    left = emoji.emojize(":left_arrow:")
+    reminder = emoji.emojize(":pushpin:")
+    white = emoji.emojize(":white_small_square:")
+    black = emoji.emojize(":black_small_square:")
+    print('pos_neg_sign24_ounce_price',pos_neg_sign24_ounce_price)
+    pos_neg_sign24_ounce_price_situ= emoji.emojize(':green_circle:') + " "
+    if pos_neg_sign24_ounce_price=="":
+        pos_neg_sign24_ounce_price_situ= emoji.emojize(':red_circle:') + " "
+    message =   (
+                 # f'{prohibited} میانگین نرخ طلا:  {now_mean} تومان {growth_24_situ}\n\n'
+                f'{prohibited} انس جهانی:  {ounce_price} دلار \n\n'
+                f'درصد تغییرات 24 ساعته انس جهانی\n'
+                f'{pos_neg_sign24_ounce_price_situ} {pos_neg_sign24_ounce_price}{str(ounce_dif)} % \n\n'
+                 f'_______________________  \n'
+                 f'                     {calendar}  {(jalali_date)}\n\n'
+                 f'                           {clock}  {Times_min}\n'
+                 f'\n'
+                 f'@alarm_change'
+                 )
+
+    # message = message.encode('utf-8')
+    message = message.replace("]", "")
+    message = message.replace("[", "")
+    message = message.replace("'", "")
+    try:
+        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+        config = read_config('tokens.txt')
+
+        TOKEN = config['TOKEN_GOLD']
+        if test:
+            CHAT_ID = config['CHAT_ID_ALARM_test']
+        else:
+            CHAT_ID = config['CHAT_ID_ALARM']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -460,7 +584,7 @@ def history2():
 
     conn = psycopg2.connect(
         dbname='mydb',
-        user='myuser',
+        user='postgres',
         password='377843',
         host='localhost',
         port='5432'
@@ -1531,6 +1655,12 @@ while True:
         try:
             if n == 1:
                 days_history_24, hours_history_1, month_mean, week_mean = "", "", "", ""
+                pos_last_growth_24_ounce_price = 0
+                neg_last_growth_24_ounce_price = 0
+                pos_last_growth_24=0
+                pos_last_growth_1 = 0
+                neg_last_growth_24 = 0
+                neg_last_growth_1 = 0
                 try:
                     days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time = history(n)
                     Times_hour_last = Times_hour
@@ -1770,8 +1900,107 @@ while True:
         prices.insert(0, 'hour', Times_hour)
         prices.index = pd.Series(df_jalalidate).astype(str)
         jalali_date = str(df_jalalidate)
-        if jalali_date_last==day:
+
+
+
+        alarm = 0.5
+        if n == 1:
+            first_time=True
+            Email_send = False
+            Email_send_ounce = False
+            positive24_ounce_price = False
+            positive24 = False
+            positive1 = False
+
+        try:
+            if first_time == True or day_change == True:
+                if float(growth_24) >= 0:
+                    pos_last_growth_24 = float(growth_24)
+                if float(growth_1) >= 0:
+                    pos_last_growth_1 = float(growth_1)
+                if float(growth_24) < 0:
+                    neg_last_growth_24 = float(growth_24)
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
+
+                if float(ounce_dif) >= 0:
+                    pos_last_growth_24_ounce_price = float(ounce_dif)
+                if float(ounce_dif) < 0:
+                    neg_last_growth_24_ounce_price = float(ounce_dif)
+
+
+            first_time = False
+            try:
+                if float(ounce_dif) - pos_last_growth_24_ounce_price>alarm:
+                    if float(ounce_dif) >= 0:
+                        positive24_ounce_price = True
+                        neg_last_growth_24_ounce_price = 0
+                        pos_last_growth_24_ounce_price += alarm
+
+                    Email_send_ounce = True
+
+
+
+                if (float(growth_24) - pos_last_growth_24 > alarm) or (float(growth_1) - pos_last_growth_1 > alarm):
+                    if float(growth_24) >= 0:
+                        positive24 = True
+                        neg_last_growth_24 = 0
+                    if float(growth_1) >= 0:
+                        positive1 = True
+                        neg_last_growth_1 = 0
+
+                    pos_last_growth_24 += alarm
+                    pos_last_growth_1 += alarm
+
+                    Email_send = True
+
+
+
+                if float(ounce_dif) -neg_last_growth_24_ounce_price < -alarm:
+                    if float(ounce_dif) >= 0:
+                        positive24_ounce_price = True
+                        neg_last_growth_24_ounce_price = 0
+                        pos_last_growth_24_ounce_price += -alarm
+
+                    Email_send_ounce = True
+
+                if (float(growth_24) - neg_last_growth_24 < -alarm) or (float(growth_1) - neg_last_growth_1 < -alarm):
+                    if float(growth_24) >= 0:
+                        positive24 = True
+                    else:
+                        pos_last_growth_24 = 0
+                    if float(growth_1) >= 0:
+                        positive1 = True
+                    else:
+                        pos_last_growth_1 = 0
+                    neg_last_growth_24 += -alarm
+                    neg_last_growth_1 += -alarm
+                    Email_send = True
+                print('last pos (24) ounce, ', round(pos_last_growth_24_ounce_price, 2))
+                print('last pos (24), ', round(pos_last_growth_24,2))
+                print('last pos (1), ', round(pos_last_growth_1,2))
+                print('last pos (24) ounce, ', round(neg_last_growth_24_ounce_price, 2))
+                print('last neg (24), ', round(neg_last_growth_24,2))
+                print('last pos (1), ', round(neg_last_growth_1,2))
+            except Exception as e:
+                print("Email Alarm erorr is : ", e)
+                traceback.print_exc()
             day_change = False
+            if Email_send == True:
+                send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
+                Email_send = False
+                positive24 = False
+                positive1 = False
+            if Email_send_ounce == True:
+                send_telegram3(positive24_ounce_price,ounce_price,
+                               ounce_dif, test)
+                Email_send_ounce = False
+                positive24_ounce_price = False
+                # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
+        except Exception as e:
+            print('Sending Alaram failed because', e.message)
+            traceback.print_exc()
+
         try:
             message = message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, rank_dif_list, rank_list,
                                   growth_month, growth_month_situ, growth_week, growth_week_situ, growth_24, growth_24_situ,
@@ -1807,6 +2036,7 @@ while True:
     except Exception as e:
         n += 1
         print('all problem is, ', e)
+        traceback.print_exc()
         print('time_next', time_next)
         if int(time_next) > 0:
             print(f'one losed, sleep for {time_next} sec')

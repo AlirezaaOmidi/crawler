@@ -144,15 +144,12 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
     try:
         proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
         config = read_config('tokens.txt')
-
-        if test:
-            TOKEN = config['TOKEN_TEST']
-            CHAT_ID = config['CHAT_ID_TEST']
-        else:
-            TOKEN = config['TOKEN_TETHER']
-            CHAT_ID = config['CHAT_ID_ALARM']
         TOKEN = config['TOKEN_TETHER']
-        CHAT_ID = config['CHAT_ID_ALARM']
+        if test:
+            CHAT_ID = config['CHAT_ID_ALARM_test']
+        else:
+            CHAT_ID = config['CHAT_ID_ALARM']
+        CHAT_ID = config['CHAT_ID_ALARM_test']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -510,7 +507,7 @@ def history(n):
 def history2():
     conn = psycopg2.connect(
         dbname='mydb',
-        user='myuser',
+        user='postgres',
         password='377843',
         host='localhost',
         port='5432'
@@ -1270,13 +1267,13 @@ while True:
         prices.index = pd.Series(df_jalalidate).astype(str)
         jalali_date = str(df_jalalidate)
 
-        Email_send = False
-        positive24 = False
-        positive1 = False
+
         alarm = 0.5
         if n == 1:
             first_time=True
-
+            Email_send = False
+            positive24 = False
+            positive1 = False
         try:
             if first_time == True or day_change == True:
                 if float(growth_24) >= 0:
@@ -1289,7 +1286,7 @@ while True:
                     neg_last_growth_1 = float(growth_1)
             first_time = False
             try:
-                if (float(growth_24) - pos_last_growth_24 >= alarm) or (float(growth_1) - pos_last_growth_1 >= alarm):
+                if (float(growth_24) - pos_last_growth_24 > alarm) or (float(growth_1) - pos_last_growth_1 > alarm):
                     if float(growth_24) >= 0:
                         positive24 = True
                         neg_last_growth_24 = 0
@@ -1327,6 +1324,9 @@ while True:
             if Email_send == True:
                 send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
                 # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
+                Email_send = False
+                positive24 = False
+                positive1 = False
         except Exception as e:
             print('Sending Alaram failed because', e.message)
             traceback.print_exc()

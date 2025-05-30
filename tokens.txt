@@ -5,6 +5,7 @@ CHAT_ID_TETHER= -1002201731271
 TOKEN_TEST=7474505811:AAG1j9E9GvbNQqJnqBFe06-2C_jcKuMWFX4
 CHAT_ID_TEST=-1002156845888
 CHAT_ID_ALARM=-1002118116451
+CHAT_ID_ALARM_test=-1002541460488
 SENDER_EMAIL =omidi.areza@gmail.com
 RECEIVER_EMAIL =  ["alireza.om97@gmail.com", "alireza.9776.ir@gmail.com","esn.dlm73@gmail.com", "motevalli.m.1999@gmail.com", "A.farajzadeh@gmail.com", "mr.khalilpor@gmail.com", "hamidrezahadian@gmail.com"]
 RECEIVER_EMAIL2 = ["alireza.om97@gmail.com", "alireza.9776.ir@gmail.com","omidi.areza@gmail.com","esn.dlm73@gmail.com", "motevalli.m.1999@gmail.com", "A.farajzadeh@gmail.com", "mr.khalilpor@gmail.com", "hamidrezahadian@gmail.com","mahshad.kaviani1992@gmail.com"]
