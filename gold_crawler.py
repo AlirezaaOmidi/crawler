@@ -584,7 +584,7 @@ def history2():
 
     conn = psycopg2.connect(
         dbname='mydb',
-        user='postgres',
+        user='myuser',
         password='377843',
         host='localhost',
         port='5432'
@@ -1903,7 +1903,7 @@ while True:
 
 
 
-        alarm = 0.5
+        alarm = 0.25
         if n == 1:
             first_time=True
             Email_send = False
@@ -1923,21 +1923,28 @@ while True:
                 if float(growth_1) < 0:
                     neg_last_growth_1 = float(growth_1)
 
-                if float(ounce_dif) >= 0:
-                    pos_last_growth_24_ounce_price = float(ounce_dif)
-                if float(ounce_dif) < 0:
-                    neg_last_growth_24_ounce_price = float(ounce_dif)
+
+                try:
+                    if float(ounce_dif) >= 0:
+                        pos_last_growth_24_ounce_price = float(ounce_dif)
+                    if float(ounce_dif) < 0:
+                        neg_last_growth_24_ounce_price = float(ounce_dif)
+                except:
+                    pos_last_growth_24_ounce_price=neg_last_growth_24_ounce_price=0
 
 
             first_time = False
             try:
-                if float(ounce_dif) - pos_last_growth_24_ounce_price>alarm:
-                    if float(ounce_dif) >= 0:
-                        positive24_ounce_price = True
-                        neg_last_growth_24_ounce_price = 0
-                        pos_last_growth_24_ounce_price += alarm
+                try:
+                    if float(ounce_dif) - pos_last_growth_24_ounce_price>alarm:
+                        if float(ounce_dif) >= 0:
+                            positive24_ounce_price = True
+                            neg_last_growth_24_ounce_price = 0
+                            pos_last_growth_24_ounce_price += alarm
 
-                    Email_send_ounce = True
+                        Email_send_ounce = True
+                except:
+                    print('1943')
 
 
 
@@ -1956,13 +1963,17 @@ while True:
 
 
 
-                if float(ounce_dif) -neg_last_growth_24_ounce_price < -alarm:
-                    if float(ounce_dif) >= 0:
-                        positive24_ounce_price = True
-                        neg_last_growth_24_ounce_price = 0
-                        pos_last_growth_24_ounce_price += -alarm
+                try:
 
-                    Email_send_ounce = True
+                    if float(ounce_dif) -neg_last_growth_24_ounce_price < -alarm:
+                        if float(ounce_dif) >= 0:
+                            positive24_ounce_price = True
+                            neg_last_growth_24_ounce_price = 0
+                            pos_last_growth_24_ounce_price += -alarm
+
+                        Email_send_ounce = True
+                except:
+                    print('1976')
 
                 if (float(growth_24) - neg_last_growth_24 < -alarm) or (float(growth_1) - neg_last_growth_1 < -alarm):
                     if float(growth_24) >= 0:

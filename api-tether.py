@@ -507,7 +507,7 @@ def history(n):
 def history2():
     conn = psycopg2.connect(
         dbname='mydb',
-        user='postgres',
+        user='myuser',
         password='377843',
         host='localhost',
         port='5432'
@@ -1268,7 +1268,7 @@ while True:
         jalali_date = str(df_jalalidate)
 
 
-        alarm = 0.5
+        alarm = 0.25
         if n == 1:
             first_time=True
             Email_send = False
