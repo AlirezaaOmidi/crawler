@@ -1673,6 +1673,13 @@ while True:
                 print ('day, ', day)
                 print('jalali_date_last, ', jalali_date_last)
 
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
+                    pos_last_growth_1 = 0
+                if float(growth_1) > 0:
+                    pos_last_growth_1 = float(growth_1)
+                    neg_last_growth_1 = 0
+
                 # when hours change
                 days_history_24, hours_history_1 = "", ""
                 days_history_24, hours_history_1 = history(n)
@@ -1922,8 +1929,6 @@ while True:
                     neg_last_growth_24 = float(growth_24)
                 if float(growth_1) < 0:
                     neg_last_growth_1 = float(growth_1)
-
-
                 try:
                     if float(ounce_dif) >= 0:
                         pos_last_growth_24_ounce_price = float(ounce_dif)
@@ -1931,7 +1936,6 @@ while True:
                         neg_last_growth_24_ounce_price = float(ounce_dif)
                 except:
                     pos_last_growth_24_ounce_price=neg_last_growth_24_ounce_price=0
-
 
             first_time = False
             try:
@@ -1990,9 +1994,9 @@ while True:
                 print('last pos (24) ounce, ', round(pos_last_growth_24_ounce_price, 2))
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
-                print('last pos (24) ounce, ', round(neg_last_growth_24_ounce_price, 2))
+                print('last neg (24) ounce, ', round(neg_last_growth_24_ounce_price, 2))
                 print('last neg (24), ', round(neg_last_growth_24,2))
-                print('last pos (1), ', round(neg_last_growth_1,2))
+                print('last neg (1), ', round(neg_last_growth_1,2))
             except Exception as e:
                 print("Email Alarm erorr is : ", e)
                 traceback.print_exc()

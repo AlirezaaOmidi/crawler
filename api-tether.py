@@ -1055,8 +1055,12 @@ while True:
                     Times_hour_last = Times_hour
                     jalali_date_last =  day
             if Times_hour != Times_hour_last:
-                pos_last_growth_1 = 0
-                neg_last_growth_1 = 0
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
+                    pos_last_growth_1 = 0
+                if float(growth_1) > 0:
+                    pos_last_growth_1 = float(growth_1)
+                    neg_last_growth_1 = 0
                 print ('hour changed')
                 print ('day, ', day)
                 print('jalali_date_last, ', jalali_date_last)
@@ -1316,7 +1320,7 @@ while True:
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
                 print('last neg (24), ', round(neg_last_growth_24,2))
-                print('last pos (1), ', round(neg_last_growth_1,2))
+                print('last neg (1), ', round(neg_last_growth_1,2))
             except Exception as e:
                 print("Email Alarm erorr is : ", e)
                 traceback.print_exc()
