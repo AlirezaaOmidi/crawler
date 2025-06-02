@@ -1961,8 +1961,8 @@ while True:
                         positive1 = True
                         neg_last_growth_1 = 0
 
-                    pos_last_growth_24 += alarm
-                    pos_last_growth_1 += alarm
+                    pos_last_growth_24 = growth_24
+                    pos_last_growth_1 = growth_1
 
                     Email_send = True
 
@@ -1990,8 +1990,8 @@ while True:
                         positive1 = True
                     else:
                         pos_last_growth_1 = 0
-                    neg_last_growth_24 += -alarm
-                    neg_last_growth_1 += -alarm
+                    neg_last_growth_24 = growth_24
+                    neg_last_growth_1 = growth_1
                     Email_send = True
                 print('last pos (24) ounce, ', round(pos_last_growth_24_ounce_price, 2))
                 print('last pos (24), ', round(pos_last_growth_24,2))
