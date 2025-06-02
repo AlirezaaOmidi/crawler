@@ -21,7 +21,8 @@ import warnings
 warnings.filterwarnings('ignore')
 # from telegram.ext import Application
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
-day_change=True
+day_change=False
+hour_change=False
 
 
 # if need to send message to test chanel
@@ -1672,13 +1673,8 @@ while True:
                 print ('hour changed')
                 print ('day, ', day)
                 print('jalali_date_last, ', jalali_date_last)
+                hour_change=True
 
-                if float(growth_1) < 0:
-                    neg_last_growth_1 = float(growth_1)
-                    pos_last_growth_1 = 0
-                if float(growth_1) > 0:
-                    pos_last_growth_1 = float(growth_1)
-                    neg_last_growth_1 = 0
 
                 # when hours change
                 days_history_24, hours_history_1 = "", ""
@@ -1936,6 +1932,13 @@ while True:
                         neg_last_growth_24_ounce_price = float(ounce_dif)
                 except:
                     pos_last_growth_24_ounce_price=neg_last_growth_24_ounce_price=0
+            if hour_change==True:
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
+                    pos_last_growth_1 = 0
+                if float(growth_1) > 0:
+                    pos_last_growth_1 = float(growth_1)
+                    neg_last_growth_1 = 0
 
             first_time = False
             try:
@@ -2003,6 +2006,7 @@ while True:
                 print("Email Alarm erorr is : ", e)
                 traceback.print_exc()
             day_change = False
+            hour_change = False
             if Email_send == True:
                 send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
                 Email_send = False

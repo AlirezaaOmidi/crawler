@@ -24,6 +24,8 @@ import ast
 # from telegram.ext import Application
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
+hour_change=False
+
 
 # if need to send message to test chanel vvv
 test = False
@@ -1055,15 +1057,10 @@ while True:
                     Times_hour_last = Times_hour
                     jalali_date_last =  day
             if Times_hour != Times_hour_last:
-                if float(growth_1) < 0:
-                    neg_last_growth_1 = float(growth_1)
-                    pos_last_growth_1 = 0
-                if float(growth_1) > 0:
-                    pos_last_growth_1 = float(growth_1)
-                    neg_last_growth_1 = 0
                 print ('hour changed')
                 print ('day, ', day)
                 print('jalali_date_last, ', jalali_date_last)
+                hour_change=True
 
                 # when hours change
                 days_history_24, hours_history_1 = "", ""
@@ -1288,6 +1285,13 @@ while True:
                     neg_last_growth_24 = float(growth_24)
                 if float(growth_1) < 0:
                     neg_last_growth_1 = float(growth_1)
+            if hour_change == True:
+                if float(growth_1) < 0:
+                    neg_last_growth_1 = float(growth_1)
+                    pos_last_growth_1 = 0
+                if float(growth_1) > 0:
+                    pos_last_growth_1 = float(growth_1)
+                    neg_last_growth_1 = 0
             first_time = False
             try:
                 if (float(growth_24) - pos_last_growth_24 > alarm) or (float(growth_1) - pos_last_growth_1 > alarm):
@@ -1298,8 +1302,8 @@ while True:
                         positive1 = True
                         neg_last_growth_1 = 0
 
-                    pos_last_growth_24 += alarm
-                    pos_last_growth_1 += alarm
+                    pos_last_growth_24 = growth_24
+                    pos_last_growth_1 = growth_1
 
 
 
@@ -1314,8 +1318,8 @@ while True:
                         positive1 = True
                     else:
                         pos_last_growth_1 = 0
-                    neg_last_growth_24 += -alarm
-                    neg_last_growth_1 += -alarm
+                    neg_last_growth_24 = growth_24
+                    neg_last_growth_1 = growth_1
                     Email_send = True
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
@@ -1325,6 +1329,7 @@ while True:
                 print("Email Alarm erorr is : ", e)
                 traceback.print_exc()
             day_change = False
+            hour_change= False
             if Email_send == True:
                 send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
                 # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
