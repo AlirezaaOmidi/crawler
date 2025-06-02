@@ -1944,7 +1944,8 @@ while True:
                         if float(ounce_dif) >= 0:
                             positive24_ounce_price = True
                             neg_last_growth_24_ounce_price = 0
-                            pos_last_growth_24_ounce_price += alarm
+                            #دوشنبه یه دفعه باز میشه
+                            pos_last_growth_24_ounce_price = ounce_dif
 
                         Email_send_ounce = True
                 except:
@@ -1973,7 +1974,8 @@ while True:
                         if float(ounce_dif) >= 0:
                             positive24_ounce_price = True
                             neg_last_growth_24_ounce_price = 0
-                            pos_last_growth_24_ounce_price += -alarm
+                            #دوشنبه یه دفعه باز میشه
+                            pos_last_growth_24_ounce_price = ounce_dif
 
                         Email_send_ounce = True
                 except:
