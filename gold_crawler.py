@@ -524,6 +524,10 @@ def history(n):
         last_two_hours = list(hours_history.groups.keys())
         last_two_hours = sorted([int(x) for x in last_two_hours])
         last_two_hours = last_two_hours[-2:]
+        print('X', hours_history.groups.keys())
+        print(last_two_hours[-1])
+        print(type(last_two_hours[-1]))
+
         hours_history = hours_history.get_group(int(last_two_hours[-1]))
 
         # calculate the mean of day date that is prepared before
@@ -635,6 +639,7 @@ def history2():
     last_two_hours = list(hours_history.groups.keys())
     last_two_hours=sorted([int(x) for x in last_two_hours])
     last_two_hours=last_two_hours[-2:]
+    print('X',hours_history.groups.keys())
     hours_history = hours_history.get_group(int(last_two_hours[-1]))
     # select the group corresponding to the last hour
     try:
