@@ -581,6 +581,7 @@ def history(n):
             return days_history, hours_history
     except Exception as e:
         print("history", e)
+        traceback.print_exc()
 
 
 def history2():
