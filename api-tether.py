@@ -411,6 +411,10 @@ def history(n):
 
     history = pd.DataFrame(rows, columns=column_names)
     history = history.sort_values(by=history.columns[0], ascending=True)
+    history = history.drop('ap', axis=1)
+    history_col=len(history.columns)
+
+
 
     days_history=history.groupby('id')
 
@@ -466,7 +470,7 @@ def history(n):
         for i in hours_history.columns:
             days_history1.iloc[:, i_c] = pd.to_numeric(days_history1.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 13:
+            if i_c == history_col:
                 days_history1 = days_history1.fillna(method='ffill')
                 try:
                     days_history = days_history1.iloc[:, 3:].astype(int).mean(axis=0)
@@ -484,7 +488,7 @@ def history(n):
         for i in hours_history.columns:
             hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 13:
+            if i_c == history_col:
                 hours_history = hours_history.fillna(method='ffill')
                 try:
                     hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
@@ -523,6 +527,10 @@ def history2():
 
     history = pd.DataFrame(rows, columns=column_names)
     history = history.sort_values(by=history.columns[0], ascending=True)
+    history = history.drop('ap', axis=1)
+    history_col=len(history.columns)
+
+
     days_history=history.groupby('id')
 
     try:
@@ -562,7 +570,7 @@ def history2():
         for i in hours_history.columns:
             days_history.iloc[:, i_c] = pd.to_numeric(days_history.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 13:
+            if i_c == history_col:
                 days_history = days_history.fillna(method='ffill')
                 try:
                     days_history = days_history.iloc[:, 3:].astype(int).mean(axis=0)
@@ -580,7 +588,7 @@ def history2():
         for i in hours_history.columns:
             hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 13:
+            if i_c == history_col:
                 hours_history = hours_history.fillna(method='ffill')
                 try:
                     hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
