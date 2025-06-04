@@ -528,7 +528,7 @@ def history(n):
         print(last_two_hours[-1])
         print(type(last_two_hours[-1]))
 
-        hours_history = hours_history.get_group(int(last_two_hours[-1]))
+        hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
 
         # calculate the mean of day date that is prepared before
         try:
