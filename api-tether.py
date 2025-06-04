@@ -122,11 +122,11 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
     if pos_neg_sign1=="":
         pos_neg_sign1_situ=emoji.emojize(':red_circle:') + " "
     message =   (
-                 # f'{prohibited} میانگین نرخ دلار:  {now_mean} تومان {growth_24_situ}\n\n'
-                f'{prohibited} میانگین نرخ دلار:  {now_mean} تومان \n\n'
-                f'درصد تغییرات 24 ساعته دلار\n'
+                 # f'{prohibited} میانگین نرخ تتر:  {now_mean} تومان {growth_24_situ}\n\n'
+                f'{prohibited} میانگین نرخ تتر:  {now_mean} تومان \n\n'
+                f'درصد تغییرات 24 ساعته تتر\n'
                 f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
-                f'درصد تغییرات 1 ساعته دلار\n'
+                f'درصد تغییرات 1 ساعته تتر\n'
                 f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
                  f'_______________________  \n\n'
                  f'{black} حداکثر و حداقل قیمت امروز:\n\n'
@@ -187,13 +187,13 @@ def Email(Times_min, df_jalalidate,positive24,positive1,now_mean,pos_last_growth
     if positive1==False:
         pos_neg_sign1 = ''
     message = f"""\
-    Alarm: دلار
+    Alarm: تتر
     \n
-    درصد تغییرات 24 ساعته دلار
+    درصد تغییرات 24 ساعته تتر
                {prohibited} {pos_neg_sign24}{str(growth_24)} % \n
-    درصد تغییرات 1 ساعته دلار
+    درصد تغییرات 1 ساعته تتر
                {prohibited} {pos_neg_sign1}{str(growth_1)} % \n
-    ------ میانگین قیمت دلار  ------
+    ------ میانگین قیمت تتر  ------
                   {now_mean}\n
              ساعت: {str(Times_min)}
           تاریخ:{(df_jalalidate[-1])}"""

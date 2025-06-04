@@ -175,7 +175,7 @@ def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
     message =   (
                  # f'{prohibited} میانگین نرخ طلا:  {now_mean} تومان {growth_24_situ}\n\n'
                 f'{prohibited} انس جهانی:  {ounce_price} دلار \n\n'
-                f'درصد تغییرات 24 ساعته انس جهانی\n'
+                f'درصد تغییرات 24 ساعته انس جهانی\n\n'
                 f'{pos_neg_sign24_ounce_price_situ} {pos_neg_sign24_ounce_price}{str(ounce_dif)} % \n\n'
                  f'_______________________  \n'
                  f'                     {calendar}  {(jalali_date)}\n\n'
