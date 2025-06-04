@@ -1909,8 +1909,8 @@ while True:
         alarm = 0.25
         if n == 1:
             first_time=True
-            Email_send = False
-            Email_send_ounce = False
+            Alarm_send = False
+            Alarm_send_ounce = False
             positive24_ounce_price = False
             positive24 = False
             positive1 = False
@@ -1950,9 +1950,9 @@ while True:
                             #دوشنبه یه دفعه باز میشه
                             pos_last_growth_24_ounce_price = ounce_dif
 
-                        Email_send_ounce = True
+                        Alarm_send_ounce = True
                 except:
-                    print('1943')
+                    print('1955')
 
 
 
@@ -1963,11 +1963,11 @@ while True:
                     if float(growth_1) >= 0:
                         positive1 = True
                         neg_last_growth_1 = 0
-
-                    pos_last_growth_24 = growth_24
+                    if growth_24>pos_last_growth_24:
+                        pos_last_growth_24 = growth_24
                     pos_last_growth_1 = growth_1
 
-                    Email_send = True
+                    Alarm_send = True
 
 
 
@@ -1980,9 +1980,9 @@ while True:
                             #دوشنبه یه دفعه باز میشه
                             pos_last_growth_24_ounce_price = ounce_dif
 
-                        Email_send_ounce = True
+                        Alarm_send_ounce = True
                 except:
-                    print('1976')
+                    print('1985')
 
                 if (float(growth_24) - neg_last_growth_24 < -alarm) or (float(growth_1) - neg_last_growth_1 < -alarm):
                     if float(growth_24) >= 0:
@@ -1993,9 +1993,10 @@ while True:
                         positive1 = True
                     else:
                         pos_last_growth_1 = 0
-                    neg_last_growth_24 = growth_24
+                    if growth_24<neg_last_growth_24:
+                        neg_last_growth_24 = growth_24
                     neg_last_growth_1 = growth_1
-                    Email_send = True
+                    Alarm_send = True
                 print('last pos (24) ounce, ', round(pos_last_growth_24_ounce_price, 2))
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
@@ -2007,15 +2008,15 @@ while True:
                 traceback.print_exc()
             day_change = False
             hour_change = False
-            if Email_send == True:
+            if Alarm_send == True:
                 send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
-                Email_send = False
+                Alarm_send = False
                 positive24 = False
                 positive1 = False
-            if Email_send_ounce == True:
+            if Alarm_send_ounce == True:
                 send_telegram3(positive24_ounce_price,ounce_price,
                                ounce_dif, test)
-                Email_send_ounce = False
+                Alarm_send_ounce = False
                 positive24_ounce_price = False
                 # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
         except Exception as e:

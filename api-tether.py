@@ -1273,7 +1273,7 @@ while True:
         alarm = 0.25
         if n == 1:
             first_time=True
-            Email_send = False
+            Alarm_send = False
             positive24 = False
             positive1 = False
         try:
@@ -1302,13 +1302,13 @@ while True:
                     if float(growth_1) >= 0:
                         positive1 = True
                         neg_last_growth_1 = 0
-
-                    pos_last_growth_24 = growth_24
+                    if growth_24>pos_last_growth_24:
+                        pos_last_growth_24 = growth_24
                     pos_last_growth_1 = growth_1
 
 
 
-                    Email_send = True
+                    Alarm_send = True
 
                 if (float(growth_24) - neg_last_growth_24 < -alarm) or (float(growth_1) - neg_last_growth_1 < -alarm):
                     if float(growth_24) >= 0:
@@ -1319,9 +1319,10 @@ while True:
                         positive1 = True
                     else:
                         pos_last_growth_1 = 0
-                    neg_last_growth_24 = growth_24
+                    if growth_24<neg_last_growth_24:
+                        neg_last_growth_24 = growth_24
                     neg_last_growth_1 = growth_1
-                    Email_send = True
+                    Alarm_send = True
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
                 print('last neg (24), ', round(neg_last_growth_24,2))
@@ -1331,10 +1332,10 @@ while True:
                 traceback.print_exc()
             day_change = False
             hour_change= False
-            if Email_send == True:
+            if Alarm_send == True:
                 send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
                 # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
-                Email_send = False
+                Alarm_send = False
                 positive24 = False
                 positive1 = False
         except Exception as e:
