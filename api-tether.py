@@ -136,7 +136,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
                  f'                     {calendar}  {(jalali_date)}\n\n'
                  f'                           {clock}  {Times_min}\n'
                  f'\n'
-                 f'@alarm_change'
+                 f'@alarm_change_tether'
                  )
 
     # message = message.encode('utf-8')
