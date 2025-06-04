@@ -453,8 +453,10 @@ def history(n):
     except:
         today_max, today_min,highest_time ,lowest_time= "", "","", ""
     hours_history = days_history2.groupby('hour')
-    last_two_hours = list(hours_history.groups.keys())[-2:]
-    hours_history = hours_history.get_group(last_two_hours[-1])
+    last_two_hours = list(hours_history.groups.keys())
+    last_two_hours=sorted([int(x) for x in last_two_hours])
+    last_two_hours=last_two_hours[-2:]
+    hours_history = hours_history.get_group(str(last_two_hours[-1]))
     # select the group corresponding to the last hour
 
     try:
@@ -548,8 +550,10 @@ def history2():
     days_history.interpolate(method='ffill', inplace=True)
     days_history.interpolate(method='bfill', inplace=True)
     hours_history = days_history.groupby('hour')
-    last_two_hours = list(hours_history.groups.keys())[-2:]
-    hours_history = hours_history.get_group(last_two_hours[-1])
+    last_two_hours = list(hours_history.groups.keys())
+    last_two_hours=sorted([int(x) for x in last_two_hours])
+    last_two_hours=last_two_hours[-2:]
+    hours_history = hours_history.get_group(str(last_two_hours[-1]))
     # select the group corresponding to the last hour
     try:
         days_history = days_history.iloc[:, 3:].astype(int).mean(axis=0)

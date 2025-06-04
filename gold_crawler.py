@@ -521,8 +521,10 @@ def history(n):
             print(e)
             today_max, today_min, highest_time, lowest_time = "", "", "", ""
         hours_history = days_history2.groupby('hour')
-        last_two_hours = list(hours_history.groups.keys())[-2:]
-        hours_history = hours_history.get_group(last_two_hours[-1])
+        last_two_hours = list(hours_history.groups.keys())
+        last_two_hours = sorted([int(x) for x in last_two_hours])
+        last_two_hours = last_two_hours[-2:]
+        hours_history = hours_history.get_group(str(last_two_hours[-1]))
 
         # calculate the mean of day date that is prepared before
         try:
@@ -629,8 +631,10 @@ def history2():
     temp_mean = temp_mean.iloc[:, 3:-5].astype(float).mean(axis=0).mean()
     days_history.iloc[:, 3:-5] = days_history.iloc[:, 3:-5].replace('', temp_mean)
     hours_history = days_history.groupby('hour')
-    last_two_hours = list(hours_history.groups.keys())[-2:]
-    hours_history = hours_history.get_group(last_two_hours[-1])
+    last_two_hours = list(hours_history.groups.keys())
+    last_two_hours=sorted([int(x) for x in last_two_hours])
+    last_two_hours=last_two_hours[-2:]
+    hours_history = hours_history.get_group(str(last_two_hours[-1]))
     # select the group corresponding to the last hour
     try:
         days_history = days_history.iloc[:, 3:].astype(float).mean(axis=0)
