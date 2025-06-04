@@ -1919,17 +1919,23 @@ while True:
             if first_time == True or day_change == True:
                 if float(growth_24) >= 0:
                     pos_last_growth_24 = float(growth_24)
+                    neg_last_growth_24 = 0
                 if float(growth_1) >= 0:
                     pos_last_growth_1 = float(growth_1)
+                    neg_last_growth_1 = 0
                 if float(growth_24) < 0:
                     neg_last_growth_24 = float(growth_24)
+                    pos_last_growth_24 = 0
                 if float(growth_1) < 0:
                     neg_last_growth_1 = float(growth_1)
+                    pos_last_growth_1 = 0
                 try:
                     if float(ounce_dif) >= 0:
                         pos_last_growth_24_ounce_price = float(ounce_dif)
+                        neg_last_growth_24_ounce_price = 0
                     if float(ounce_dif) < 0:
                         neg_last_growth_24_ounce_price = float(ounce_dif)
+                        pos_last_growth_24_ounce_price = 0
                 except:
                     pos_last_growth_24_ounce_price=neg_last_growth_24_ounce_price=0
             if hour_change==True:
