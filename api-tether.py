@@ -128,7 +128,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
                 f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
                 f'درصد تغییرات 1 ساعته تتر\n'
                 f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
-                 f'_______________________  \n\n'
+                 f'_______________________ best \n\n'
                  f'{black} حداکثر و حداقل قیمت امروز:\n\n'
                  f'              {up} {highest_price}          AT: {highest_time}\n\n'
                  f'              {down} {lowest_price}          AT: {lowest_time}\n\n'
@@ -1282,7 +1282,7 @@ while True:
         jalali_date = str(df_jalalidate)
 
 
-        alarm = 0.25
+        alarm = 0.1
         if n == 1:
             first_time=True
             Alarm_send = False
