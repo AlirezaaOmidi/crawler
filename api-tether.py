@@ -132,7 +132,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
                  f'{black} حداکثر و حداقل قیمت امروز:\n\n'
                  f'              {up} {highest_price}          AT: {highest_time}\n\n'
                  f'              {down} {lowest_price}          AT: {lowest_time}\n\n'
-                 f'_______________________ test \n'
+                 f'_______________________  \n'
                  f'                     {calendar}  {(jalali_date)}\n\n'
                  f'                           {clock}  {Times_min}\n'
                  f'\n'
