@@ -25,7 +25,7 @@ import ast
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
-
+alarm = 1
 
 # if need to send message to test chanel vvv
 test = False
@@ -128,11 +128,11 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
                 f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
                 f'درصد تغییرات 1 ساعته تتر\n'
                 f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
-                 f'_______________________ best \n\n'
+                 f'_______________________  \n\n'
                  f'{black} حداکثر و حداقل قیمت امروز:\n\n'
                  f'              {up} {highest_price}          AT: {highest_time}\n\n'
                  f'              {down} {lowest_price}          AT: {lowest_time}\n\n'
-                 f'_______________________  \n'
+                 f'_______________________ test \n'
                  f'                     {calendar}  {(jalali_date)}\n\n'
                  f'                           {clock}  {Times_min}\n'
                  f'\n'
@@ -148,10 +148,10 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
         config = read_config('tokens.txt')
         TOKEN = config['TOKEN_TETHER']
         if test:
-            CHAT_ID = config['CHAT_ID_ALARM_test']
+            CHAT_ID = config['CHAT_ID_TEST']
         else:
-            CHAT_ID = config['CHAT_ID_ALARM']
-        CHAT_ID = config['CHAT_ID_ALARM_test']
+            CHAT_ID = config['CHAT_ID_ALARM_tether']
+        CHAT_ID = config['CHAT_ID_ALARM_tether']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -336,191 +336,230 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
 
 
 def sqlData (new_line):
-    # Connect to PostgreSQL
-    conn = psycopg2.connect(
-        dbname='mydb',
-        user='myuser',
-        password='377843',
-        host='localhost',
-        port='5432'
-    )
-    cursor = conn.cursor()
+
 
     def sanitize(row):
         return [None if val == '' else val for val in row]
 
     new_line = sanitize(new_line)
-    cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
-                         (id TEXT,
-                          hour text,
-                          Time Text,
-                          nobitex INTEGER,
-                          wallex INTEGER,
-                          tabdeal INTEGER,
-                          ramzinex INTEGER,
-                          exir INTEGER,
-                          tetherland INTEGER,
-                          ok_ex INTEGER,
-                          aban INTEGER,
-                          ap INTEGER,
-                          bitpin INTEGER)
-                          ''')
-    insert_sql = '''
-            INSERT INTO tether_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        '''
-    cursor.execute(insert_sql, new_line)
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-
-    con=sqlite3.connect(database_tether)
-    cursor=con.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
-                         (id TEXT,
-                          hour text,
-                          Time Text,
-                          nobitex INTEGER,
-                          wallex INTEGER,
-                          tabdeal INTEGER,
-                          ramzinex INTEGER,
-                          exir INTEGER,
-                          tetherland INTEGER,
-                          ok_ex INTEGER
-                          aban INTEGER,
-                          ap INTEGER,
-                          bitpin INTEGER)
-                          ''')
-    cursor.execute("INSERT INTO tether_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",new_line)
-    con.commit()
-    con.close()
+    try:
+        # Connect to myuserQL
+        conn = psycopg2.connect(
+            dbname='mydb',
+            user='myuser',
+            password='377843',
+            host='localhost',
+            port='5432'
+        )
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
+                             (id TEXT,
+                              hour text,
+                              Time Text,
+                              nobitex INTEGER,
+                              wallex INTEGER,
+                              tabdeal INTEGER,
+                              ramzinex INTEGER,
+                              exir INTEGER,
+                              tetherland INTEGER,
+                              ok_ex INTEGER,
+                              aban INTEGER,
+                              ap INTEGER,
+                              bitpin INTEGER)
+                              ''')
+        insert_sql = '''
+                INSERT INTO tether_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            '''
+        cursor.execute(insert_sql, new_line)
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except:
+        pass
+    try:
+        con=sqlite3.connect(database_tether)
+        cursor=con.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
+                             (id TEXT,
+                              hour text,
+                              Time Text,
+                              nobitex INTEGER,
+                              wallex INTEGER,
+                              tabdeal INTEGER,
+                              ramzinex INTEGER,
+                              exir INTEGER,
+                              tetherland INTEGER,
+                              ok_ex INTEGER
+                              aban INTEGER,
+                              ap INTEGER,
+                              bitpin INTEGER)
+                              ''')
+        cursor.execute("INSERT INTO tether_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",new_line)
+        con.commit()
+        con.close()
+    except:
+        pass
 
 
 def history(n):
-    conn = psycopg2.connect(
-        dbname='mydb',
-        user='myuser',
-        password='377843',
-        host='localhost',
-        port='5432'
-    )
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 80000")
-    rows = cur.fetchall()
-    column_names = [desc[0] for desc in cur.description]
-
-    history = pd.DataFrame(rows, columns=column_names)
-    history = history.sort_values(by=history.columns[0], ascending=True)
-    history = history.drop('ap', axis=1)
-    history_col=len(history.columns)
-
-
-
-    days_history=history.groupby('id')
-
-    if n==1:
+    try:
         try:
-            formonthhistory=history.copy()
-            formonthhistory.replace('', np.nan, inplace=True)
-            formonthhistory = formonthhistory.fillna(method='bfill')
-            # formonthhistory = formonthhistory.dropna()
-            formonthhistory.index=formonthhistory['id']
-            mon30=formonthhistory.id.unique()[-31]
-            mon0=formonthhistory.id.unique()[-31]
-            month=formonthhistory.loc[mon30:mon0]
-            month_mean = month.iloc[:, 3:].astype(float).mean(axis=0)
-            week7=formonthhistory.id.unique()[-8]
-            week0 = formonthhistory.id.unique()[-8]
-            week = formonthhistory.loc[week7:week0]
-            week_mean=week.iloc[:, 3:].astype(float).mean(axis=0)
+            conn = psycopg2.connect(
+                dbname='mydb',
+                user='myuser',
+                password='377843',
+                host='localhost',
+                port='5432'
+            )
+            cur = conn.cursor()
         except Exception as e:
-            print('monthly or weekly erorr, ',e)
+            print('postgre',e)
+            conn = sqlite3.connect(database_tether)
+            # Create a cursor object
+            cur = conn.cursor()
+            # Commit the changes
+            conn.commit()
+            # Execute a query to retrieve the data
 
-    group_day1=history.id.unique()[-2]
-    days_history1 = days_history.get_group(group_day1)
-    days_history1 = days_history1.replace('', np.nan)
-    days_history1.interpolate(method='linear', inplace=True)
-    days_history1.interpolate(method='ffill', inplace=True)
-    days_history1.interpolate(method='bfill', inplace=True)
+        cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 80000")
+        rows = cur.fetchall()
+        column_names = [desc[0] for desc in cur.description]
 
-    group_day2=history.id.unique()[-1]
-    days_history2 = days_history.get_group(group_day2)
-    days_history2 = days_history2.replace('', np.nan)
-    days_history2.interpolate(method='linear', inplace=True)
-    days_history2.interpolate(method='ffill', inplace=True)
-    days_history2.interpolate(method='bfill', inplace=True)
-    try:
-        today_max, today_min = days_history2.iloc[:, 3:].mean(axis=1).max(), days_history2.iloc[:, 3:].mean(
-            axis=1).min()
-        highest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmax(),'time']
-        lowest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmin(),'time']
-    except:
-        today_max, today_min,highest_time ,lowest_time= "", "","", ""
-    hours_history = days_history2.groupby('hour')
-    last_two_hours = list(hours_history.groups.keys())
-    last_two_hours=sorted([int(x) for x in last_two_hours])
-    last_two_hours=last_two_hours[-2:]
-    hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
-    # select the group corresponding to the last hour
+        history = pd.DataFrame(rows, columns=column_names)
+        history = history.sort_values(by=history.columns[0], ascending=True)
+        history = history.drop('ap', axis=1)
+        history_col=len(history.columns)
 
-    try:
-        days_history=days_history1.iloc[:,3:].astype(int).mean(axis=0)
-    except:
-        i_c = 3
-        for i in hours_history.columns:
-            days_history1.iloc[:, i_c] = pd.to_numeric(days_history1.iloc[:, i_c], errors="coerce")
-            i_c += 1
-            if i_c == history_col:
-                days_history1 = days_history1.fillna(method='ffill')
-                try:
-                    days_history = days_history1.iloc[:, 3:].astype(int).mean(axis=0)
-                except:
-                    days_history1=days_history1.T
-                    mean = days_history1.iloc[3:, :].mean()
-                    days_history1=days_history1.fillna(mean)
-                    days_history1=days_history1.T
-                    days_history = days_history1.iloc[:, 3:].astype(int).mean(axis=0)
-                break
-    try:
-        hours_history=hours_history.iloc[:,3:].astype(int).mean(axis=0)
-    except:
-        i_c = 3
-        for i in hours_history.columns:
-            hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
-            i_c += 1
-            if i_c == history_col:
-                hours_history = hours_history.fillna(method='ffill')
-                try:
-                    hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
-                except:
-                    hours_history=hours_history.T
-                    mean = hours_history.iloc[3:, :].mean()
-                    hours_history=hours_history.fillna(mean)
-                    hours_history=hours_history.T
-                    hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
-                break
 
-    conn.commit()
-    conn.close()
-    if n==1:
+
+        days_history=history.groupby('id')
+
+        if n==1:
+            try:
+                formonthhistory=history.copy()
+                formonthhistory.replace('', np.nan, inplace=True)
+                formonthhistory = formonthhistory.fillna(method='bfill')
+                # formonthhistory = formonthhistory.dropna()
+                formonthhistory.index=formonthhistory['id']
+                mon30=formonthhistory.id.unique()[-31]
+                mon0=formonthhistory.id.unique()[-31]
+                month=formonthhistory.loc[mon30:mon0]
+                month_mean = month.iloc[:, 3:].astype(float).mean(axis=0)
+                week7=formonthhistory.id.unique()[-8]
+                week0 = formonthhistory.id.unique()[-8]
+                week = formonthhistory.loc[week7:week0]
+                week_mean=week.iloc[:, 3:].astype(float).mean(axis=0)
+            except Exception as e:
+                print('monthly or weekly erorr, ',e)
+
+        group_day1=history.id.unique()[-2]
+        days_history1 = days_history.get_group(group_day1)
+        days_history1 = days_history1.replace('', np.nan)
+        days_history1.interpolate(method='linear', inplace=True)
+        days_history1.interpolate(method='ffill', inplace=True)
+        days_history1.interpolate(method='bfill', inplace=True)
+
+        group_day2=history.id.unique()[-1]
+        days_history2 = days_history.get_group(group_day2)
+        days_history2 = days_history2.replace('', np.nan)
+        days_history2.interpolate(method='linear', inplace=True)
+        days_history2.interpolate(method='ffill', inplace=True)
+        days_history2.interpolate(method='bfill', inplace=True)
         try:
-            return days_history,hours_history,month_mean, week_mean,today_max,today_min,highest_time,lowest_time
+            today_max, today_min = days_history2.iloc[:, 3:].mean(axis=1).max(), days_history2.iloc[:, 3:].mean(
+                axis=1).min()
+            highest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmax(),'time']
+            lowest_time=days_history2.loc[days_history2.iloc[:, 3:].mean(axis=1).idxmin(),'time']
         except:
-            month_mean="-"
-            week_mean="-"
-            return days_history, hours_history, month_mean, week_mean,today_max,today_min,highest_time,lowest_time
-    else:
-        return days_history, hours_history
+            today_max, today_min,highest_time ,lowest_time= "", "","", ""
+        hours_history = days_history2.groupby('hour')
+        last_two_hours = list(hours_history.groups.keys())
+        last_two_hours=sorted([int(x) for x in last_two_hours])
+        last_two_hours=last_two_hours[-2:]
+        if n == 1:
+            try:
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
+            except:
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
+        else:
+            try:
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
+            except:
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
+        hours_history = hours_history1
+        # select the group corresponding to the last hour
+
+        try:
+            days_history=days_history1.iloc[:,3:].astype(int).mean(axis=0)
+        except:
+            i_c = 3
+            for i in hours_history.columns:
+                days_history1.iloc[:, i_c] = pd.to_numeric(days_history1.iloc[:, i_c], errors="coerce")
+                i_c += 1
+                if i_c == history_col:
+                    days_history1 = days_history1.fillna(method='ffill')
+                    try:
+                        days_history = days_history1.iloc[:, 3:].astype(int).mean(axis=0)
+                    except:
+                        days_history1=days_history1.T
+                        mean = days_history1.iloc[3:, :].mean()
+                        days_history1=days_history1.fillna(mean)
+                        days_history1=days_history1.T
+                        days_history = days_history1.iloc[:, 3:].astype(int).mean(axis=0)
+                    break
+        try:
+            hours_history=hours_history.iloc[:,3:].astype(int).mean(axis=0)
+        except:
+            i_c = 3
+            for i in hours_history.columns:
+                hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
+                i_c += 1
+                if i_c == history_col:
+                    hours_history = hours_history.fillna(method='ffill')
+                    try:
+                        hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
+                    except:
+                        hours_history=hours_history.T
+                        mean = hours_history.iloc[3:, :].mean()
+                        hours_history=hours_history.fillna(mean)
+                        hours_history=hours_history.T
+                        hours_history = hours_history.iloc[:, 3:].astype(int).mean(axis=0)
+                    break
+
+        conn.commit()
+        conn.close()
+        if n==1:
+            try:
+                return days_history,hours_history,month_mean, week_mean,today_max,today_min,highest_time,lowest_time
+            except:
+                month_mean="-"
+                week_mean="-"
+                return days_history, hours_history, month_mean, week_mean,today_max,today_min,highest_time,lowest_time
+        else:
+            return days_history, hours_history
+    except Exception as e:
+        print("history", e)
+        traceback.print_exc()
 
 def history2():
-    conn = psycopg2.connect(
-        dbname='mydb',
-        user='myuser',
-        password='377843',
-        host='localhost',
-        port='5432'
-    )
-    cur = conn.cursor()
+    try:
+        conn = psycopg2.connect(
+            dbname='mydb',
+            user='myuser',
+            password='377843',
+            host='localhost',
+            port='5432'
+        )
+        cur = conn.cursor()
+    except Exception as e:
+        print('postgre', e)
+        conn = sqlite3.connect(database_tether)
+        # Create a cursor object
+        cur = conn.cursor()
+        # Commit the changes
+        conn.commit()
+        # Execute a query to retrieve the data
+
     cur.execute("SELECT * FROM tether_data ORDER BY id DESC LIMIT 80000")
     rows = cur.fetchall()
     column_names = [desc[0] for desc in cur.description]
@@ -561,7 +600,10 @@ def history2():
     last_two_hours = list(hours_history.groups.keys())
     last_two_hours=sorted([int(x) for x in last_two_hours])
     last_two_hours=last_two_hours[-2:]
-    hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
+    try:
+        hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
+    except:
+        hours_history = hours_history.get_group(int(last_two_hours[-1]))
     # select the group corresponding to the last hour
     try:
         days_history = days_history.iloc[:, 3:].astype(int).mean(axis=0)
@@ -799,7 +841,7 @@ def getting_data():
         url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
-        url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
+        # url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
         url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
@@ -1122,22 +1164,6 @@ while True:
             pass
 
 
-        try:
-            days_history_week_mean = week_mean.mean()
-            days_history_month_mean = month_mean.mean()
-        except:
-            print('ERROR 7')
-        try:
-            days_history_24mean = days_history_24.mean()
-            hours_history_1mean = hours_history_1.mean()
-        except:
-            print('ERROR 8')
-
-        try:
-            rank_list, rank_name_list, situ_list, rank_dif_list, prices = sec_func(prices, hours_history_1)
-        except Exception as e:
-            print(e)
-            print('ERROR Baqerzadeh:)')
 
 
         # if n==1:
@@ -1174,6 +1200,10 @@ while True:
                 try:
                     if abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>1.5:
                         prices4[f"{colu}"]=""
+                        week_mean[f"{colu}"]=""
+                        month_mean[f"{colu}"]=""
+                        days_history_24[f"{colu}"]=""
+                        hours_history_1[f"{colu}"]=""
                 except:
                     pass
             prices2 = prices4.copy()
@@ -1183,6 +1213,32 @@ while True:
         except:
             now_mean=now_mean_zero
             pass
+
+        try:
+            week_mean = week_mean.replace('', np.nan)
+            week_mean = week_mean.dropna()
+            month_mean = month_mean.replace('', np.nan)
+            month_mean = month_mean.dropna()
+            days_history_week_mean = week_mean.mean()
+            days_history_month_mean = month_mean.mean()
+        except:
+            print('ERROR 7')
+        try:
+            days_history_24 = days_history_24.replace('', np.nan)
+            days_history_24 = days_history_24.dropna()
+            hours_history_1 = hours_history_1.replace('', np.nan)
+            hours_history_1 = hours_history_1.dropna()
+            days_history_24mean = days_history_24.mean()
+            hours_history_1mean = hours_history_1.mean()
+        except:
+            print('ERROR 8')
+
+        try:
+            rank_list, rank_name_list, situ_list, rank_dif_list, prices = sec_func(prices, hours_history_1)
+        except Exception as e:
+            print(e)
+            print('ERROR Baqerzadeh:)')
+
 
         try:
             if n==1:
@@ -1282,7 +1338,7 @@ while True:
         jalali_date = str(df_jalalidate)
 
 
-        alarm = 0.1
+
         if n == 1:
             first_time=True
             Alarm_send = False

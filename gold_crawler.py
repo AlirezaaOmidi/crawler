@@ -23,7 +23,7 @@ warnings.filterwarnings('ignore')
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
-
+alarm = 1
 
 # if need to send message to test chanel
 test = False
@@ -121,7 +121,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
                 f'{pos_neg_sign24_situ} {pos_neg_sign24}{str(growth_24)} % \n\n'
                 f'درصد تغییرات 1 ساعته طلا\n'
                 f'{pos_neg_sign1_situ} {pos_neg_sign1}{str(growth_1)} % \n\n'
-                 f'_______________________ best \n\n'
+                 f'_______________________ test \n\n'
                  f'{black} حداکثر و حداقل قیمت امروز:\n\n'
                f'          {up} {highest_price}           AT: {highest_time}\n\n'
                f'          {down} {lowest_price}           AT: {lowest_time}\n\n'
@@ -142,9 +142,10 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
 
         TOKEN = config['TOKEN_GOLD']
         if test:
-            CHAT_ID = config['CHAT_ID_ALARM_test']
+            CHAT_ID = config['CHAT_ID_TEST']
         else:
-            CHAT_ID = config['CHAT_ID_ALARM']
+            CHAT_ID = config['CHAT_ID_ALARM_gold']
+        # CHAT_ID = config['CHAT_ID_ALARM_gold']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -177,7 +178,7 @@ def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
                 f'{prohibited} انس جهانی:  {ounce_price} دلار \n\n'
                 f'درصد تغییرات 24 ساعته انس جهانی\n\n'
                 f'{pos_neg_sign24_ounce_price_situ} {pos_neg_sign24_ounce_price}{str(ounce_dif)} % \n\n'
-                 f'_______________________ best \n'
+                 f'_______________________ test \n'
                  f'                     {calendar}  {(jalali_date)}\n\n'
                  f'                           {clock}  {Times_min}\n'
                  f'\n'
@@ -194,9 +195,10 @@ def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
 
         TOKEN = config['TOKEN_GOLD']
         if test:
-            CHAT_ID = config['CHAT_ID_ALARM_test']
+            CHAT_ID = config['CHAT_ID_TEST']
         else:
-            CHAT_ID = config['CHAT_ID_ALARM']
+            CHAT_ID = config['CHAT_ID_ALARM_gold']
+        # CHAT_ID = config['CHAT_ID_ALARM_gold']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -373,58 +375,24 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
 
 
 def sqlData(new_line):
-    # Connect to PostgreSQL
-    conn = psycopg2.connect(
-        dbname='mydb',
-        user='myuser',
-        password='377843',
-        host='localhost',
-        port='5432'
-    )
-    cursor = conn.cursor()
+    try:
+        # Connect to myuserQL
+        conn = psycopg2.connect(
+            dbname='mydb',
+            user='myuser',
+            password='377843',
+            host='localhost',
+            port='5432'
+        )
+        cursor = conn.cursor()
 
-    def sanitize(row):
-        return [None if val == '' else val for val in row]
+        def sanitize(row):
+            return [None if val == '' else val for val in row]
 
-    new_line = sanitize(new_line)
-    cursor.execute('''CREATE TABLE IF NOT EXISTS gold_data
-                         (id TEXT,
-                          hour text,
-                          Time Text,
-                          talasea INTEGER,
-                          miligold INTEGER,
-                          tlyn INTEGER,
-                          daric INTEGER,
-                          talapp INTEGER,
-                          estjt INTEGER,
-                          ap INTEGER,
-                          TGJU INTEGER,
-                          melli INTEGER,
-                          wallgold INTEGER,
-                          technogold INTEGER,
-                          digikala INTEGER,
-                          zarpad INTEGER,
-                          goldis INTEGER,
-                          goldika INTEGER,                          
-                          bazaretala INTEGER,
-                          ounce INTEGER,
-                          dollar INTEGER,
-                          dollar_based INTEGER,
-                          coin INTEGER,
-                          bubble_coin INTEGER)''')
-    insert_sql = '''
-        INSERT INTO gold_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    '''
-    cursor.execute(insert_sql, new_line)
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-    con = sqlite3.connect(database_gold)
-    cursor = con.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS gold_data
+        new_line = sanitize(new_line)
+        cursor.execute('''CREATE TABLE IF NOT EXISTS gold_data
                              (id TEXT,
-                              hour text
+                              hour text,
                               Time Text,
                               talasea INTEGER,
                               miligold INTEGER,
@@ -447,23 +415,70 @@ def sqlData(new_line):
                               dollar_based INTEGER,
                               coin INTEGER,
                               bubble_coin INTEGER)''')
-    cursor.execute("INSERT INTO gold_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new_line)
-    con.commit()
-    con.close()
-
+        insert_sql = '''
+            INSERT INTO gold_data VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(insert_sql, new_line)
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except:
+        pass
+    try:
+        con = sqlite3.connect(database_gold)
+        cursor = con.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS gold_data
+                                 (id TEXT,
+                                  hour text
+                                  Time Text,
+                                  talasea INTEGER,
+                                  miligold INTEGER,
+                                  tlyn INTEGER,
+                                  daric INTEGER,
+                                  talapp INTEGER,
+                                  estjt INTEGER,
+                                  ap INTEGER,
+                                  TGJU INTEGER,
+                                  melli INTEGER,
+                                  wallgold INTEGER,
+                                  technogold INTEGER,
+                                  digikala INTEGER,
+                                  zarpad INTEGER,
+                                  goldis INTEGER,
+                                  goldika INTEGER,                          
+                                  bazaretala INTEGER,
+                                  ounce INTEGER,
+                                  dollar INTEGER,
+                                  dollar_based INTEGER,
+                                  coin INTEGER,
+                                  bubble_coin INTEGER)''')
+        cursor.execute("INSERT INTO gold_data VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new_line)
+        con.commit()
+        con.close()
+    except:
+        pass
 
 def history(n):
     # this function should used when whole app started in the middle of a day or when it's working and yet day has not changed
 
     try:
-        conn = psycopg2.connect(
-            dbname='mydb',
-            user='myuser',
-            password='377843',
-            host='localhost',
-            port='5432'
-        )
-        cur = conn.cursor()
+        try:
+            conn = psycopg2.connect(
+                dbname='mydb',
+                user='myuser',
+                password='377843',
+                host='localhost',
+                port='5432'
+            )
+            cur = conn.cursor()
+        except Exception as e:
+            print('postgre', e)
+            conn = sqlite3.connect(database_gold)
+            # Create a cursor object
+            cur = conn.cursor()
+            # Commit the changes
+            conn.commit()
+            # Execute a query to retrieve the data
 
         cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
         rows = cur.fetchall()
@@ -471,7 +486,7 @@ def history(n):
 
         history = pd.DataFrame(rows, columns=column_names)
         history = history.sort_values(by=history.columns[0], ascending=True)
-
+        history_col=len(history.columns)
         days_history = history.groupby('id')
         """to calculate average of last weak and last month values"""
         if n == 1:
@@ -524,8 +539,17 @@ def history(n):
         last_two_hours = list(hours_history.groups.keys())
         last_two_hours = sorted([int(x) for x in last_two_hours])
         last_two_hours = last_two_hours[-2:]
-        hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
-
+        if n == 1:
+            try:
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
+            except:
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
+        else:
+            try:
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
+            except:
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
+        hours_history = hours_history1
         # calculate the mean of day date that is prepared before
         try:
             days_history = days_history1.iloc[:, 3:].astype(float).mean(axis=0)
@@ -535,7 +559,7 @@ def history(n):
             for i in days_history1.columns:
                 days_history1.iloc[:, i_c] = pd.to_numeric(days_history1.iloc[:, i_c], errors="coerce")
                 i_c += 1
-                if i_c == 24:
+                if i_c == history_col:
                     # fill empty sells with data before
                     days_history1 = days_history1.ffill()
                     try:
@@ -557,7 +581,7 @@ def history(n):
             for i in hours_history.columns:
                 hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
                 i_c += 1
-                if i_c == 24:
+                if i_c == history_col:
                     hours_history = hours_history.ffill()
                     try:
                         hours_history = hours_history.iloc[:, 3:].astype(float).mean(axis=0)
@@ -585,15 +609,23 @@ def history(n):
 
 
 def history2():
-
-    conn = psycopg2.connect(
-        dbname='mydb',
-        user='myuser',
-        password='377843',
-        host='localhost',
-        port='5432'
-    )
-    cur = conn.cursor()
+    try:
+        conn = psycopg2.connect(
+            dbname='mydb',
+            user='myuser',
+            password='377843',
+            host='localhost',
+            port='5432'
+        )
+        cur = conn.cursor()
+    except Exception as e:
+        print('postgre', e)
+        conn = sqlite3.connect(database_gold)
+        # Create a cursor object
+        cur = conn.cursor()
+        # Commit the changes
+        conn.commit()
+        # Execute a query to retrieve the data
 
     cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
     rows = cur.fetchall()
@@ -601,6 +633,7 @@ def history2():
 
     history = pd.DataFrame(rows, columns=column_names)
     history = history.sort_values(by=history.columns[0], ascending=True)
+    history_col = len(history.columns)
     days_history = history.groupby('id')
 
     try:
@@ -635,8 +668,10 @@ def history2():
     last_two_hours = list(hours_history.groups.keys())
     last_two_hours=sorted([int(x) for x in last_two_hours])
     last_two_hours=last_two_hours[-2:]
-    hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
-    # select the group corresponding to the last hour
+    try:
+        hours_history = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
+    except:
+        hours_history = hours_history.get_group(int(last_two_hours[-1]))    # select the group corresponding to the last hour
     try:
         days_history = days_history.iloc[:, 3:].astype(float).mean(axis=0)
     except:
@@ -644,7 +679,7 @@ def history2():
         for i in hours_history.columns:
             days_history.iloc[:, i_c] = pd.to_numeric(days_history.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 24:
+            if i_c == history_col:
                 days_history = days_history.ffill()
                 try:
                     days_history = days_history.iloc[:, 3:].astype(float).mean(axis=0)
@@ -663,7 +698,7 @@ def history2():
         for i in hours_history.columns:
             hours_history.iloc[:, i_c] = pd.to_numeric(hours_history.iloc[:, i_c], errors="coerce")
             i_c += 1
-            if i_c == 24:
+            if i_c == history_col:
                 # fill empty sells with data before
                 hours_history = hours_history.ffill()
                 try:
@@ -1724,12 +1759,6 @@ while True:
         except:
             print('ERROR 8')
 
-        try:
-            rank_list, rank_name_list, situ_list, rank_dif_list, prices, estjt_price, estjt_situ, estjt_dif, coin_price, coin_situ, coin_dif, ounce_price, ounce_situ, ounce_dif, dollar_price, dollar_situ, dollar_dif, dollar_based_price, dollar_based_situ, dollar_based_dif,coin_price_copy,dollar_price_copy,ounce_price_copy,estjt_price_copy,coin_price_copy = sec_func(
-                prices, days_history_24)
-        except Exception as e:
-            print(e)
-            print('ERROR Baqerzadeh:)')
 
         if n==1:
             prices3 = prices.copy()
@@ -1743,9 +1772,33 @@ while True:
                 n2=n+30
             if n2 > n:
                 prices[f'{price_drop}'] = ""
+                week_mean[f"{colu}"] = ""
+                month_mean[f"{colu}"] = ""
+                days_history_24[f"{colu}"] = ""
+                hours_history_1[f"{colu}"] = ""
         except Exception as e:
             print('price_check, ',e)
         prices3=prices.copy()
+
+        try:
+            week_mean = week_mean.replace('', np.nan)
+            week_mean = week_mean.dropna()
+            month_mean = month_mean.replace('', np.nan)
+            month_mean = month_mean.dropna()
+            days_history_week_mean = week_mean.iloc[:-7].mean()
+            days_history_month_mean = month_mean.iloc[:-7].mean()
+        except:
+            print('ERROR 7')
+
+        try:
+            days_history_24 = days_history_24.replace('', np.nan)
+            days_history_24 = days_history_24.dropna()
+            hours_history_1 = hours_history_1.replace('', np.nan)
+            hours_history_1 = hours_history_1.dropna()
+            days_history_24mean = days_history_24.iloc[:-7].mean()
+            hours_history_1mean = hours_history_1.iloc[:-7].mean()
+        except:
+            print('ERROR 8')
 
 
         try:
@@ -1768,7 +1821,16 @@ while True:
                     if abs((prices4[f"{colu}"]-now_mean)/now_mean*100)>1.5:
                         if colu!='estjt':
                             prices4[f"{colu}"]=""
+                            week_mean[f"{colu}"] = ""
+                            month_mean[f"{colu}"] = ""
+                            days_history_24[f"{colu}"] = ""
+                            hours_history_1[f"{colu}"] = ""
                 except:
+                    prices4[f"{colu}"] = ""
+                    week_mean[f"{colu}"] = ""
+                    month_mean[f"{colu}"] = ""
+                    days_history_24[f"{colu}"] = ""
+                    hours_history_1[f"{colu}"] = ""
                     pass
             prices2 = prices4.copy()
             prices2 = prices2.iloc[:-6]
@@ -1778,6 +1840,32 @@ while True:
         except:
             pass
 
+        try:
+            week_mean = week_mean.replace('', np.nan)
+            week_mean = week_mean.dropna()
+            month_mean = month_mean.replace('', np.nan)
+            month_mean = month_mean.dropna()
+            days_history_week_mean = week_mean.iloc[:-7].mean()
+            days_history_month_mean = month_mean.iloc[:-7].mean()
+        except:
+            print('ERROR 7')
+
+        try:
+            days_history_24 = days_history_24.replace('', np.nan)
+            days_history_24 = days_history_24.dropna()
+            hours_history_1 = hours_history_1.replace('', np.nan)
+            hours_history_1 = hours_history_1.dropna()
+            days_history_24mean = days_history_24.iloc[:-7].mean()
+            hours_history_1mean = hours_history_1.iloc[:-7].mean()
+        except:
+            print('ERROR 8')
+        try:
+            rank_list, rank_name_list, situ_list, rank_dif_list, prices, estjt_price, estjt_situ, estjt_dif, coin_price, coin_situ, coin_dif, ounce_price, ounce_situ, ounce_dif, dollar_price, dollar_situ, dollar_dif, dollar_based_price, dollar_based_situ, dollar_based_dif,coin_price_copy,dollar_price_copy,ounce_price_copy,estjt_price_copy,coin_price_copy = sec_func(prices, days_history_24)
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
+
+            print('ERROR Baqerzadeh:)')
         try:
             if n==1:
                 try:
@@ -1813,7 +1901,6 @@ while True:
                 lowest_time = lowest_time_copy
             except:
                 lowest_price,highest_price,highest_time,lowest_time="","","",""
-
 
         try:
             growth_month = round(((now_mean - days_history_month_mean) / days_history_month_mean) * 100, 2)
@@ -1910,8 +1997,6 @@ while True:
         jalali_date = str(df_jalalidate)
 
 
-
-        alarm = 0.1
         if n == 1:
             first_time=True
             Alarm_send = False
@@ -1965,8 +2050,6 @@ while True:
                 except:
                     print('1955')
 
-
-
                 if (float(growth_24) - pos_last_growth_24 > alarm) or (float(growth_1) - pos_last_growth_1 > alarm):
                     if float(growth_24) >= 0:
                         positive24 = True
@@ -1977,13 +2060,10 @@ while True:
                     if growth_24>pos_last_growth_24:
                         pos_last_growth_24 = growth_24
                     pos_last_growth_1 = growth_1
-
                     Alarm_send = True
 
 
-
                 try:
-
                     if float(ounce_dif) -neg_last_growth_24_ounce_price < -alarm:
                         if float(ounce_dif) >= 0:
                             positive24_ounce_price = True
