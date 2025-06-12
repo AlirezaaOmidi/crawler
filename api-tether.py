@@ -485,9 +485,9 @@ def history(n):
                 hours_history1 = hours_history.get_group(int(last_two_hours[0]))
         else:
             try:
-                hours_history1 = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
             except:
-                hours_history1 = hours_history.get_group(int(last_two_hours[-1]))
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
         hours_history = hours_history1
         # select the group corresponding to the last hour
 
@@ -1108,6 +1108,8 @@ while True:
                 neg_last_growth_1 = 0
                 try:
                     days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time = history(n)
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
                     jalali_date_last = day
                 except:
@@ -1124,6 +1126,8 @@ while True:
                 print("test")
                 try:
                     days_history_24, hours_history_1 = history(n)
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                 except Exception as e:
                     print(e)
                 print('days_history_24', days_history_24)
@@ -1153,6 +1157,8 @@ while True:
                     print('day changed')
                     days_history_24, hours_history_1, month_mean, week_mean = "", "", "", ""
                     days_history_24, hours_history_1, month_mean, week_mean = history2()
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     pos_last_growth_24 = 0
                     pos_last_growth_1 = 0
                     neg_last_growth_24 = 0
@@ -1165,8 +1171,6 @@ while True:
         except:
             pass
 
-        days_history_24_copy=days_history_24.copy()
-        hours_history_1_copy=hours_history_1.copy()
 
 
         # if n==1:

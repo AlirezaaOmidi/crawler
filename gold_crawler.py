@@ -24,7 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
-alarm_treshold=0.75
+alarm_treshold=0.9
 
 # if need to send message to test chanel
 test = False
@@ -1677,7 +1677,7 @@ while True:
             n += 1
         print("Try")
         # set time intervals
-        sleep = 300 * n
+        sleep = 60 * n
 
 
         with ThreadPoolExecutor() as executor:
@@ -1705,6 +1705,8 @@ while True:
                 neg_last_growth_1 = 0
                 try:
                     days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time = history(n)
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
                     jalali_date_last = day
                 except:
@@ -1720,6 +1722,8 @@ while True:
                 # when hours change
                 days_history_24, hours_history_1 = "", ""
                 days_history_24, hours_history_1 = history(n)
+                days_history_24_copy = days_history_24.copy()
+                hours_history_1_copy = hours_history_1.copy()
                 Times_hour_last = Times_hour
                 try:
                     if Times_hour == '01':
@@ -1749,8 +1753,7 @@ while True:
         except:
             pass
 
-        days_history_24_copy=days_history_24.copy()
-        hours_history_1_copy=hours_history_1.copy()
+
 
         try:
             days_history_week_mean = week_mean.iloc[:-5].mean()
