@@ -547,9 +547,9 @@ def history(n):
                 hours_history1 = hours_history.get_group(int(last_two_hours[0]))
         else:
             try:
-                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
             except:
-                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
+                hours_history1 = hours_history.get_group(int(last_two_hours[-1]))
         hours_history = hours_history1
         # calculate the mean of day date that is prepared before
         try:
