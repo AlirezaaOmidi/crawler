@@ -24,6 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
+alarm_treshold=0.75
 
 # if need to send message to test chanel
 test = False
@@ -360,7 +361,7 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
                f'{emoj} انس جهانی :\n{ounce_price} {dollar}     {ounce_situ}  {ounce_dif} %\n\n'
                f'{emoj} دلار (تتر نوبیتکس) :\n\n({dollar_price})           {dollar_situ}  {dollar_dif} %\n\n'
                # f'{emoj} نرخ بر اساس انس جهانی و تتر :\n\n{dollar_based_price}         {dollar_based_situ}  {dollar_based_dif} %\n\n'
-               # f'{emoj}                                                              :TGJU\n{tgju_price}          {tgju_situ}  {tgju_dif} %\n\n'
+               # f'{emoj}                                                              :tgju\n{tgju_price}          {tgju_situ}  {tgju_dif} %\n\n'
                f'{emoj} حباب نرخ طلا (تومان) :\n\n             {shift2}            {bubble_situ} {bubble} \n'
                f'______________________  \n'
                f'                      {calendar}  {(jalali_date)}\n\n'
@@ -401,7 +402,7 @@ def sqlData(new_line):
                               talapp INTEGER,
                               estjt INTEGER,
                               ap INTEGER,
-                              TGJU INTEGER,
+                              tgju INTEGER,
                               melli INTEGER,
                               wallgold INTEGER,
                               technogold INTEGER,
@@ -438,7 +439,7 @@ def sqlData(new_line):
                                   talapp INTEGER,
                                   estjt INTEGER,
                                   ap INTEGER,
-                                  TGJU INTEGER,
+                                  tgju INTEGER,
                                   melli INTEGER,
                                   wallgold INTEGER,
                                   technogold INTEGER,
@@ -902,10 +903,10 @@ def melli(url_melli, prices, names):
     return prices, names
 
 
-def TGJU(url_TGJU, prices, names):
+def tgju(url_tgju, prices, names):
     try:
-        names.append('TGJU')
-        response = requests.get(url_TGJU, verify=False, timeout=10)
+        names.append('tgju')
+        response = requests.get(url_tgju, verify=False, timeout=10)
         soup = BeautifulSoup(response.content, 'html.parser')
         info_prices = soup.select('.info-price')
         second_info_price = info_prices[3].get_text()
@@ -914,9 +915,9 @@ def TGJU(url_TGJU, prices, names):
             x_dif = 7 - len(str(second_info_price))
             x_dif = 10 ** x_dif
             second_info_price = int((int(second_info_price)) * x_dif)
-        TGJU_price = pd.Series(second_info_price)
-        TGJU_price = TGJU_price.values.astype(int)
-        prices.append(TGJU_price)
+        tgju_price = pd.Series(second_info_price)
+        tgju_price = tgju_price.values.astype(int)
+        prices.append(tgju_price)
     except:
         prices.append("")
         pass
@@ -1248,7 +1249,7 @@ def getting_data():
         url_talasea = "https://Api.talasea.ir/api/market/getGoldprice"
         url_tlyn = "https://price.tlyn.ir/api/v1/price"
         url_goldika = "https://goldika.ir/api/public/price"
-        url_TGJU = "https://www.tgju.org/profile/geram18"
+        url_tgju = "https://www.tgju.org/profile/geram18"
         url_estjt = "https://www.estjt.ir/"
         url_ounce = "https://data-asg.goldprice.org/dbXRates/USD"
         url_dollar = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
@@ -1268,7 +1269,7 @@ def getting_data():
             prices, names = talapp(url_talapp, prices, names)
             prices, names , dublicate_estjt = estjt(url_estjt, prices, names)
             prices, names = asyncio.run(ap(url_ap, prices, names))
-            prices, names = TGJU(url_TGJU, prices, names)
+            prices, names = tgju(url_tgju, prices, names)
             prices, names = melli(url_melli, prices, names)
             prices, names = wallgold(url_wallgold, prices, names)
             prices, names = technogold(url_technogold, prices, names)
@@ -1419,17 +1420,17 @@ def sec_func(prices, days_history_24):
 
     try:
         try:
-            TGJU_situ = situ(prices.TGJU, days_history_24.TGJU)
-            TGJU_dif = np.round(((prices.TGJU - days_history_24.TGJU) / days_history_24.TGJU) * 100, 2)
-            if abs(TGJU_dif) < 0.01:
-                TGJU_dif = "0.00"
+            tgju_situ = situ(prices.tgju, days_history_24.tgju)
+            tgju_dif = np.round(((prices.tgju - days_history_24.tgju) / days_history_24.tgju) * 100, 2)
+            if abs(tgju_dif) < 0.01:
+                tgju_dif = "0.00"
         except:
-            TGJU_situ = emoji.emojize(':radio_button:') + " "
-            TGJU_dif = ""
-        # rank_list.append(prices.TGJU)
+            tgju_situ = emoji.emojize(':radio_button:') + " "
+            tgju_dif = ""
+        # rank_list.append(prices.tgju)
         # rank_name_list.append('تی جی')
-        # situ_list.append(TGJU_situ)
-        # rank_dif_list.append(TGJU_dif)
+        # situ_list.append(tgju_situ)
+        # rank_dif_list.append(tgju_dif)
     except:
         pass
     try:
@@ -1748,14 +1749,17 @@ while True:
         except:
             pass
 
+        days_history_24_copy=days_history_24.copy()
+        hours_history_1_copy=hours_history_1.copy()
+
         try:
-            days_history_week_mean = week_mean.iloc[:-7].mean()
-            days_history_month_mean = month_mean.iloc[:-7].mean()
+            days_history_week_mean = week_mean.iloc[:-5].mean()
+            days_history_month_mean = month_mean.iloc[:-5].mean()
         except:
             print('ERROR 7')
         try:
-            days_history_24mean = days_history_24.iloc[:-7].mean()
-            hours_history_1mean = hours_history_1.iloc[:-7].mean()
+            days_history_24mean = days_history_24.iloc[:-5].mean()
+            hours_history_1mean = hours_history_1.iloc[:-5].mean()
         except:
             print('ERROR 8')
 
@@ -1785,8 +1789,8 @@ while True:
             week_mean = week_mean.dropna()
             month_mean = month_mean.replace('', np.nan)
             month_mean = month_mean.dropna()
-            days_history_week_mean = week_mean.iloc[:-7].mean()
-            days_history_month_mean = month_mean.iloc[:-7].mean()
+            days_history_week_mean = week_mean.iloc[:-5].mean()
+            days_history_month_mean = month_mean.iloc[:-5].mean()
         except:
             print('ERROR 7')
 
@@ -1795,19 +1799,19 @@ while True:
             days_history_24 = days_history_24.dropna()
             hours_history_1 = hours_history_1.replace('', np.nan)
             hours_history_1 = hours_history_1.dropna()
-            days_history_24mean = days_history_24.iloc[:-7].mean()
-            hours_history_1mean = hours_history_1.iloc[:-7].mean()
+            days_history_24mean = days_history_24.iloc[:-5].mean()
+            hours_history_1mean = hours_history_1.iloc[:-5].mean()
         except:
             print('ERROR 8')
 
 
         try:
-            now_mean = prices.iloc[:-6].mean()
+            now_mean = prices.iloc[:-4].mean()
         except:
             print('ERROR 5')
             try:
                 prices2 = prices.copy()
-                prices2 = prices2.iloc[:-6]
+                prices2 = prices2.iloc[:-4]
                 prices2 = prices2.replace('', np.nan)
                 prices2 = prices2.dropna()
                 now_mean = prices2.mean()
@@ -1816,9 +1820,13 @@ while True:
                 print('after ERROR 5', e)
         try:
             prices4=prices.copy()
-            for colu in prices4.iloc[:-6].index:
+            for colu in prices4.iloc[:-4].index:
                 try:
-                    if abs((prices4[f"{colu}"]-now_mean)/now_mean*100)>1.5:
+                    if ((abs((prices4[f"{colu}"]-now_mean)/now_mean*100)>alarm_treshold )
+                    or (abs((week_mean[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > alarm_treshold)
+                    or (abs((month_mean[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > alarm_treshold)
+                    or (abs((days_history_24[f"{colu}"] - days_history_24mean) / days_history_24mean * 100) > alarm_treshold)
+                    or (abs((hours_history_1[f"{colu}"] - hours_history_1mean) / hours_history_1mean * 100) > alarm_treshold)):
                         if colu!='estjt':
                             prices4[f"{colu}"]=""
                             week_mean[f"{colu}"] = ""
@@ -1833,7 +1841,7 @@ while True:
                     hours_history_1[f"{colu}"] = ""
                     pass
             prices2 = prices4.copy()
-            prices2 = prices2.iloc[:-6]
+            prices2 = prices2.iloc[:-4]
             prices2 = prices2.replace('', np.nan)
             prices2 = prices2.dropna()
             now_mean = prices2.mean()
@@ -1845,8 +1853,8 @@ while True:
             week_mean = week_mean.dropna()
             month_mean = month_mean.replace('', np.nan)
             month_mean = month_mean.dropna()
-            days_history_week_mean = week_mean.iloc[:-7].mean()
-            days_history_month_mean = month_mean.iloc[:-7].mean()
+            days_history_week_mean = week_mean.iloc[:-5].mean()
+            days_history_month_mean = month_mean.iloc[:-5].mean()
         except:
             print('ERROR 7')
 
@@ -1855,12 +1863,12 @@ while True:
             days_history_24 = days_history_24.dropna()
             hours_history_1 = hours_history_1.replace('', np.nan)
             hours_history_1 = hours_history_1.dropna()
-            days_history_24mean = days_history_24.iloc[:-7].mean()
-            hours_history_1mean = hours_history_1.iloc[:-7].mean()
+            days_history_24mean = days_history_24.iloc[:-5].mean()
+            hours_history_1mean = hours_history_1.iloc[:-5].mean()
         except:
             print('ERROR 8')
         try:
-            rank_list, rank_name_list, situ_list, rank_dif_list, prices, estjt_price, estjt_situ, estjt_dif, coin_price, coin_situ, coin_dif, ounce_price, ounce_situ, ounce_dif, dollar_price, dollar_situ, dollar_dif, dollar_based_price, dollar_based_situ, dollar_based_dif,coin_price_copy,dollar_price_copy,ounce_price_copy,estjt_price_copy,coin_price_copy = sec_func(prices, days_history_24)
+            rank_list, rank_name_list, situ_list, rank_dif_list, prices, estjt_price, estjt_situ, estjt_dif, coin_price, coin_situ, coin_dif, ounce_price, ounce_situ, ounce_dif, dollar_price, dollar_situ, dollar_dif, dollar_based_price, dollar_based_situ, dollar_based_dif,coin_price_copy,dollar_price_copy,ounce_price_copy,estjt_price_copy,coin_price_copy = sec_func(prices, days_history_24_copy)
         except Exception as e:
             print(e)
             traceback.print_exc()

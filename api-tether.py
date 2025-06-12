@@ -26,6 +26,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
+alarm_treshold=1
 
 # if need to send message to test chanel vvv
 test = False
@@ -60,6 +61,7 @@ def send_file(token, chat_id, message, proxy=None):
     try:
         r = requests.post(url, data=data, proxies=proxies, timeout=10)
         if r.status_code == 200:
+
             print("✅ Message sent!")
         else:
             print(f"❌ Telegram API error: {r.status_code} {r.text}")
@@ -151,7 +153,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
             CHAT_ID = config['CHAT_ID_TEST']
         else:
             CHAT_ID = config['CHAT_ID_ALARM_tether']
-        CHAT_ID = config['CHAT_ID_ALARM_tether']
+        # CHAT_ID = config['CHAT_ID_ALARM_tether']
         asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
     except Exception as e:
         print("")
@@ -427,7 +429,7 @@ def history(n):
 
         history = pd.DataFrame(rows, columns=column_names)
         history = history.sort_values(by=history.columns[0], ascending=True)
-        history = history.drop('ap', axis=1)
+        # history = history.drop('ap', axis=1)
         history_col=len(history.columns)
 
 
@@ -665,7 +667,7 @@ def nobitex(url_nobitex, prices, names):
         prices.append("")
         pass
     return prices, names
-        
+
 
 def wallex(url_wallex, prices, names):
     try:
@@ -1017,10 +1019,10 @@ def sec_func(prices, hours_history_1):
         except:
             ap_situ = emoji.emojize(':radio_button:') + " "
             ap_dif = ""
-        rank_list.append(prices.ap)
-        rank_name_list.append('آپ')
-        situ_list.append(ap_situ)
-        rank_dif_list.append(ap_dif)
+        # rank_list.append(prices.ap)
+        # rank_name_list.append('آپ')
+        # situ_list.append(ap_situ)
+        # rank_dif_list.append(ap_dif)
     except:
         pass
 
@@ -1163,7 +1165,8 @@ while True:
         except:
             pass
 
-
+        days_history_24_copy=days_history_24.copy()
+        hours_history_1_copy=hours_history_1.copy()
 
 
         # if n==1:
@@ -1194,11 +1197,28 @@ while True:
             except Exception as e:
                 prices2 = ""
                 print('after ERROR 5', e)
+
+
+
+        try:
+            days_history_week_mean = week_mean.mean()
+            days_history_month_mean = month_mean.mean()
+        except:
+            print('ERROR 7')
+        try:
+            days_history_24mean = days_history_24.mean()
+            hours_history_1mean = hours_history_1.mean()
+        except:
+            print('ERROR 8')
         try:
             prices4=prices.copy()
             for colu in prices4.index:
                 try:
-                    if abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>1.5:
+                    if ((abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>alarm_treshold)
+                    or (abs((week_mean[f"{colu}"]-days_history_week_mean)/days_history_week_mean*100)>alarm_treshold)
+                    or (abs((month_mean[f"{colu}"]-days_history_month_mean)/days_history_month_mean*100)>alarm_treshold)
+                    or (abs((days_history_24[f"{colu}"]-days_history_24mean)/days_history_24mean*100)>alarm_treshold)
+                    or (abs((hours_history_1[f"{colu}"]-hours_history_1mean)/hours_history_1mean*100)>alarm_treshold)):
                         prices4[f"{colu}"]=""
                         week_mean[f"{colu}"]=""
                         month_mean[f"{colu}"]=""
@@ -1213,6 +1233,7 @@ while True:
         except:
             now_mean=now_mean_zero
             pass
+
 
         try:
             week_mean = week_mean.replace('', np.nan)
@@ -1234,7 +1255,7 @@ while True:
             print('ERROR 8')
 
         try:
-            rank_list, rank_name_list, situ_list, rank_dif_list, prices = sec_func(prices, hours_history_1)
+            rank_list, rank_name_list, situ_list, rank_dif_list, prices = sec_func(prices, hours_history_1_copy)
         except Exception as e:
             print(e)
             print('ERROR Baqerzadeh:)')
@@ -1395,11 +1416,15 @@ while True:
                         neg_last_growth_24 = growth_24
                     neg_last_growth_1 = growth_1
                     Alarm_send = True
+
+
+
                 print('last pos (24), ', round(pos_last_growth_24,2))
                 print('last pos (1), ', round(pos_last_growth_1,2))
                 print('last neg (24), ', round(neg_last_growth_24,2))
                 print('last neg (1), ', round(neg_last_growth_1,2))
             except Exception as e:
+
                 print("Email Alarm erorr is : ", e)
                 traceback.print_exc()
             day_change = False
@@ -1411,6 +1436,7 @@ while True:
                 positive24 = False
                 positive1 = False
         except Exception as e:
+
             print('Sending Alaram failed because', e.message)
             traceback.print_exc()
 
@@ -1423,14 +1449,17 @@ while True:
             try:
                 send_telegram(message, test)
             except Exception as e:
+
                 print("telegram send", e)
         except:
+
             print('ERROR 18')
         # chose last dataline to add to database
         new_line = tuple(list(prices.itertuples())[-1])
         try:
             sqlData(new_line)
         except:
+
             print('ERROR 19')
         # processing on data get a message for sharing
 
@@ -1438,15 +1467,19 @@ while True:
         n += 1
 
         if int(time_next) > 0:
+
             print(f'sleep for {time_next} sec')
             time.sleep(time_next)
 
     except Exception as e:
         n += 1
+
         print('all problem is, ', e)
         traceback.print_exc()
+
         print('time_next', time_next)
         if int(time_next) > 0:
+
             print(f'one losed, sleep for {time_next} sec')
             time.sleep(time_next)
 
