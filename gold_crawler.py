@@ -24,7 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
-alarm_treshold=0.9
+alarm_treshold=5
 
 # if need to send message to test chanel
 test = False
