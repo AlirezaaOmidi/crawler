@@ -532,6 +532,7 @@ def history(n):
         conn.close()
         if n==1:
             try:
+                print(days_history,hours_history,month_mean, week_mean)
                 return days_history,hours_history,month_mean, week_mean,today_max,today_min,highest_time,lowest_time
             except:
                 month_mean="-"
@@ -1207,14 +1208,11 @@ while True:
         try:
             days_history_week_mean = week_mean.mean()
             days_history_month_mean = month_mean.mean()
-            print('days_history_week_mean',days_history_week_mean)
         except:
             print('ERROR 7')
         try:
             days_history_24mean = days_history_24.mean()
             hours_history_1mean = hours_history_1.mean()
-            print('days_history_24mean',days_history_24mean)
-
         except:
             print('ERROR 8')
         try:
@@ -1249,8 +1247,6 @@ while True:
             month_mean = month_mean.dropna()
             days_history_week_mean = week_mean.mean()
             days_history_month_mean = month_mean.mean()
-            print('days_history_month_mean',days_history_month_mean)
-
         except:
             print('ERROR 7')
         try:
@@ -1260,8 +1256,6 @@ while True:
             hours_history_1 = hours_history_1.dropna()
             days_history_24mean = days_history_24.mean()
             hours_history_1mean = hours_history_1.mean()
-            print('days_history_24mean',days_history_24mean)
-
         except:
             print('ERROR 8')
 
@@ -1310,9 +1304,6 @@ while True:
 
         try:
             growth_month = round(((now_mean - days_history_month_mean) / days_history_month_mean) * 100, 2)
-            print('growth_month',growth_month)
-            print('days_history_month_mean',days_history_month_mean)
-
             if abs( growth_month)<0.01:
                  growth_month='0.00'
             growth_month_situ = situ(now_mean, days_history_month_mean)
