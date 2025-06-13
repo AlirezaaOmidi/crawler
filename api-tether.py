@@ -26,10 +26,11 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
-alarm_treshold=1
+primary_alarm_treshold=5
+alarm_treshold=3
 
 # if need to send message to test chanel vvv
-test = True
+test = False
 n = 0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
@@ -485,9 +486,9 @@ def history(n):
                 hours_history1 = hours_history.get_group(int(last_two_hours[0]))
         else:
             try:
-                hours_history1 = hours_history.get_group(f"{int(last_two_hours[-1]):02d}")
+                hours_history1 = hours_history.get_group(f"{int(last_two_hours[0]):02d}")
             except:
-                hours_history1 = hours_history.get_group(int(last_two_hours[-1]))
+                hours_history1 = hours_history.get_group(int(last_two_hours[0]))
         hours_history = hours_history1
         # select the group corresponding to the last hour
 
@@ -1108,6 +1109,10 @@ while True:
                 neg_last_growth_1 = 0
                 try:
                     days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time = history(n)
+                    month_mean_copy = month_mean.copy()
+                    week_mean_copy = week_mean.copy()
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
                     jalali_date_last = day
                 except:
@@ -1124,6 +1129,8 @@ while True:
                 print("test")
                 try:
                     days_history_24, hours_history_1 = history(n)
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                 except Exception as e:
                     print(e)
                 print('days_history_24', days_history_24)
@@ -1153,6 +1160,10 @@ while True:
                     print('day changed')
                     days_history_24, hours_history_1, month_mean, week_mean = "", "", "", ""
                     days_history_24, hours_history_1, month_mean, week_mean = history2()
+                    month_mean_copy = month_mean.copy()
+                    week_mean_copy = week_mean.copy()
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     pos_last_growth_24 = 0
                     pos_last_growth_1 = 0
                     neg_last_growth_24 = 0
@@ -1165,8 +1176,6 @@ while True:
         except:
             pass
 
-        days_history_24_copy=days_history_24.copy()
-        hours_history_1_copy=hours_history_1.copy()
 
 
         # if n==1:
@@ -1185,18 +1194,33 @@ while True:
         #     print('price_check, ',e)
         # prices3=prices.copy()
 
+
+
         try:
-            now_mean_zero = prices.mean()
+            prices2 = prices.copy()
+            prices2 = prices2.replace('', np.nan)
+            prices2 = prices2.dropna()
+            now_mean_zero = prices2.mean()
+            print(now_mean_zero)
         except:
             print('ERROR 5')
+        try:
+
             try:
-                prices2 = prices.copy()
-                prices2 = prices2.replace('', np.nan)
-                prices2 = prices2.dropna()
-                now_mean_zero = prices2.mean()
-            except Exception as e:
-                prices2 = ""
-                print('after ERROR 5', e)
+                for colu in prices2.index:
+                    try:
+                        if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold):
+                            prices2[f"{colu}"] = ""
+                    except:
+                        pass
+            except:
+                pass
+            prices2 = prices2.replace('', np.nan)
+            prices2 = prices2.dropna()
+            now_mean_zero = prices2.mean()
+        except Exception as e:
+            prices2 = ""
+            print('after ERROR 5', e)
 
 
 
@@ -1215,10 +1239,10 @@ while True:
             for colu in prices4.index:
                 try:
                     if ((abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>alarm_treshold)
-                    or (abs((week_mean[f"{colu}"]-days_history_week_mean)/days_history_week_mean*100)>alarm_treshold)
-                    or (abs((month_mean[f"{colu}"]-days_history_month_mean)/days_history_month_mean*100)>alarm_treshold)
-                    or (abs((days_history_24[f"{colu}"]-days_history_24mean)/days_history_24mean*100)>alarm_treshold)
-                    or (abs((hours_history_1[f"{colu}"]-hours_history_1mean)/hours_history_1mean*100)>alarm_treshold)):
+                    or (abs((week_mean_copy[f"{colu}"]-days_history_week_mean)/days_history_week_mean*100)>alarm_treshold)
+                    or (abs((month_mean_copy[f"{colu}"]-days_history_month_mean)/days_history_month_mean*100)>alarm_treshold)
+                    or (abs((days_history_24_copy[f"{colu}"]-days_history_24mean)/days_history_24mean*100)>alarm_treshold)
+                    or (abs((hours_history_1_copy[f"{colu}"]-hours_history_1mean)/hours_history_1mean*100)>alarm_treshold)):
                         prices4[f"{colu}"]=""
                         week_mean[f"{colu}"]=""
                         month_mean[f"{colu}"]=""
