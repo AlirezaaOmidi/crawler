@@ -1766,26 +1766,26 @@ while True:
         except:
             print('ERROR 8')
 
-
-        if n==1:
-            prices3 = prices.copy()
-            n2=0
-        try:
-            price_check=pd.concat([prices,prices3],axis=1).T
-            price_check=price_check.replace("",np.nan).dropna(axis=1).pct_change().iloc[-1] * 100
-            price_check=price_check[abs(price_check) >= 20]
-            for i in price_check.index:
-                price_drop=i
-                n2=n+30
-            if n2 > n:
-                prices[f'{price_drop}'] = ""
-                week_mean[f"{colu}"] = ""
-                month_mean[f"{colu}"] = ""
-                days_history_24[f"{colu}"] = ""
-                hours_history_1[f"{colu}"] = ""
-        except Exception as e:
-            print('price_check, ',e)
-        prices3=prices.copy()
+        #
+        # if n==1:
+        #     prices3 = prices.copy()
+        #     n2=0
+        # try:
+        #     price_check=pd.concat([prices,prices3],axis=1).T
+        #     price_check=price_check.replace("",np.nan).dropna(axis=1).pct_change().iloc[-1] * 100
+        #     price_check=price_check[abs(price_check) >= 20]
+        #     for i in price_check.index:
+        #         price_drop=i
+        #         n2=n+30
+        #     if n2 > n:
+        #         prices[f'{price_drop}'] = ""
+        #         week_mean[f"{colu}"] = ""
+        #         month_mean[f"{colu}"] = ""
+        #         days_history_24[f"{colu}"] = ""
+        #         hours_history_1[f"{colu}"] = ""
+        # except Exception as e:
+        #     print('price_check, ',e)
+        # prices3=prices.copy()
 
         try:
             week_mean = week_mean.replace('', np.nan)
