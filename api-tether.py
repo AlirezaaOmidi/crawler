@@ -673,7 +673,7 @@ def nobitex(url_nobitex, prices, names):
 def wallex(url_wallex, prices, names):
     try:
         names.append('wallex')
-        response = requests.get(url_wallex,verify=False, timeout=15)
+        response = requests.get(url_wallex,verify=False, timeout=7)
         data = response.json()
         wallex_price = int(float(data['result']['latestTrades'][0]['price']))
         wallex_price = int((int(wallex_price)) * 10)
@@ -687,7 +687,7 @@ def wallex(url_wallex, prices, names):
 def tabdeal(url_tabdeal, prices, names):
     try:
         names.append('tabdeal')
-        response = requests.get(url_tabdeal,verify=False, timeout=15)
+        response = requests.get(url_tabdeal,verify=False, timeout=7)
         data = response.json()
         x = next((item for item in data if item['name'] == 'TetherUS'), None)
         tabdeal_price = int(x['markets'][0]['price'])
@@ -702,7 +702,7 @@ def tabdeal(url_tabdeal, prices, names):
 def ramzinex(url_ramzinex, prices, names):
     try:
         names.append('ramzinex')
-        response = requests.get(url_ramzinex,verify=False, timeout=15)
+        response = requests.get(url_ramzinex,verify=False, timeout=7)
         data = json.loads(response.text)
         ramzinex_price = data['close']
         if len(str(ramzinex_price)) < 6:
@@ -717,7 +717,7 @@ def ramzinex(url_ramzinex, prices, names):
 def exir(url_exir, prices, names):
     try:
         names.append('exir')
-        response = requests.get(url_exir,verify=False, timeout=15)
+        response = requests.get(url_exir,verify=False, timeout=7)
         data = response.json()
         exir_price = data['close']
         exir_price = int((int(exir_price)) * 10)
@@ -732,7 +732,7 @@ def tetherland(url_tetherland, prices, names):
     try:
         names.append('tetherland')
         headers = {"Accept": "application/json"}
-        response = requests.get(url_tetherland, headers=headers,verify=False, timeout=15)
+        response = requests.get(url_tetherland, headers=headers,verify=False, timeout=7)
         data = response.json()
         tetherland_price = data['data']['currencies']['USDT']['price']
         tetherland_price = int((int(tetherland_price)) * 10)
@@ -745,7 +745,7 @@ def tetherland(url_tetherland, prices, names):
 def ok_ex(url_ok_ex, prices, names):
     try:
         names.append('ok_ex')
-        response = requests.get(url_ok_ex,verify=False, timeout=15)
+        response = requests.get(url_ok_ex,verify=False, timeout=7)
         data = response.json()
         ok_ex_price = data['tickers'][0]['last']
         ok_ex_price = (re.sub(r"\D", "", ok_ex_price))
@@ -761,7 +761,7 @@ def ok_ex(url_ok_ex, prices, names):
 def aban(url_aban, prices, names):
     try:
         names.append('aban')
-        response = requests.get(url_aban,verify=False, timeout=15)
+        response = requests.get(url_aban,verify=False, timeout=7)
         soup = BeautifulSoup(response.content, 'html.parser')
         value = soup.find('div', {'class': 'Body_row__ta6o9'})
         aban_price = value.find("div").text
@@ -785,10 +785,10 @@ async def ap(url_ap, prices, names):
                 "model": "all",
                 "request": "SUBSCRIBE"
             }
-            await asyncio.wait_for(websocket.send(json.dumps(message)), timeout=10)
+            await asyncio.wait_for(websocket.send(json.dumps(message)), timeout=7)
 
             # Adding timeout to receiving data
-            json_data = await asyncio.wait_for(websocket.recv(), timeout=10)
+            json_data = await asyncio.wait_for(websocket.recv(), timeout=7)
             data = json.loads(json_data)
             ap_price = next((market['ask_price'] for market in data['message']['markets'] if market['market'] == 'usdtirr'), None)
 
@@ -805,7 +805,7 @@ async def ap(url_ap, prices, names):
 def bitpin(url_bitpin, prices, names):
     try:
         names.append('bitpin')
-        response = requests.get(url_bitpin,verify=False, timeout=15)
+        response = requests.get(url_bitpin,verify=False, timeout=7)
         data = response.json()
         eigen_usdt_data = next((item for item in data if item['symbol'] == 'USDT_IRT'), None)
         bitpin_price = eigen_usdt_data['price']
