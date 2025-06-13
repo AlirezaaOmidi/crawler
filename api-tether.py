@@ -844,7 +844,7 @@ def getting_data():
         url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
-        # url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
+        url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
         url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
