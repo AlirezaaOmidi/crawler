@@ -30,7 +30,7 @@ primary_alarm_treshold=5
 alarm_treshold=3
 
 # if need to send message to test chanel vvv
-test = False
+test = True
 n = 0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
@@ -346,10 +346,10 @@ def sqlData (new_line):
 
     new_line = sanitize(new_line)
     try:
-        # Connect to myuserQL
+        # Connect to postgresQL
         conn = psycopg2.connect(
             dbname='mydb',
-            user='myuser',
+            user='postgres',
             password='377843',
             host='localhost',
             port='5432'
@@ -409,7 +409,7 @@ def history(n):
         try:
             conn = psycopg2.connect(
                 dbname='mydb',
-                user='myuser',
+                user='postgres',
                 password='377843',
                 host='localhost',
                 port='5432'
@@ -548,7 +548,7 @@ def history2():
     try:
         conn = psycopg2.connect(
             dbname='mydb',
-            user='myuser',
+            user='postgres',
             password='377843',
             host='localhost',
             port='5432'
