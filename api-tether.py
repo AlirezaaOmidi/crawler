@@ -29,7 +29,7 @@ alarm = 1
 alarm_treshold=1
 
 # if need to send message to test chanel vvv
-test = False
+test = True
 n = 0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
