@@ -29,7 +29,7 @@ primary_alarm_treshold=30
 secondary_alarm_treshold=10
 
 # if need to send message to test chanel
-test = False
+test = True
 n = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
