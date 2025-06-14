@@ -31,7 +31,7 @@ secondary_alarm_treshold=5
 alarm_treshold=1
 
 # if need to send message to test chanel vvv
-test = True
+test = False
 n = 0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
@@ -845,7 +845,7 @@ def getting_data():
         url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
-        # url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
+        url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
         url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
