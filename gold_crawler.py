@@ -25,9 +25,11 @@ day_change=False
 hour_change=False
 alarm = 1
 alarm_treshold=5
+primary_alarm_treshold=30
+secondary_alarm_treshold=10
 
 # if need to send message to test chanel
-test = False
+test = True
 n = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
@@ -1705,6 +1707,8 @@ while True:
                 neg_last_growth_1 = 0
                 try:
                     days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time = history(n)
+                    month_mean_copy = month_mean.copy()
+                    week_mean_copy = week_mean.copy()
                     days_history_24_copy = days_history_24.copy()
                     hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
@@ -1722,6 +1726,8 @@ while True:
                 # when hours change
                 days_history_24, hours_history_1 = "", ""
                 days_history_24, hours_history_1 = history(n)
+                month_mean_copy = month_mean.copy()
+                week_mean_copy = week_mean.copy()
                 days_history_24_copy = days_history_24.copy()
                 hours_history_1_copy = hours_history_1.copy()
                 Times_hour_last = Times_hour
@@ -1746,12 +1752,82 @@ while True:
                     print('day changed')
                     days_history_24, hours_history_1, month_mean, week_mean = "", "", "", ""
                     days_history_24, hours_history_1, month_mean, week_mean = history2()
+                    month_mean_copy = month_mean.copy()
+                    week_mean_copy = week_mean.copy()
+                    days_history_24_copy = days_history_24.copy()
+                    hours_history_1_copy = hours_history_1.copy()
                     day_change = True
                     jalali_date_last =  day
             else:
                 print()
         except:
             pass
+
+
+        if n==1:
+            prices3 = prices.copy()
+            n2=0
+        try:
+            price_check=pd.concat([prices,prices3],axis=1).T
+            price_check=price_check.replace("",np.nan).dropna(axis=1).pct_change().iloc[-1] * 100
+            price_check=price_check[abs(price_check) >= 20]
+            for i in price_check.index:
+                price_drop=i
+                n2=n+30
+            if n2 > n:
+                prices[f'{price_drop}'] = ""
+                week_mean[f"{colu}"] = ""
+                month_mean[f"{colu}"] = ""
+                days_history_24[f"{colu}"] = ""
+                hours_history_1[f"{colu}"] = ""
+        except Exception as e:
+            print('price_check, ',e)
+        prices3=prices.copy()
+
+
+
+        try:
+            prices2 = prices.copy()
+            prices2 = prices2.iloc[:-4].replace('', np.nan)
+            prices2_5=prices.iloc[-4:].replace('', np.nan)
+            prices2 = prices2.dropna()
+            now_mean_zero = prices2.mean()
+            print(now_mean_zero)
+        except:
+            print('ERROR 5')
+        try:
+
+            try:
+                for colu in prices2.index:
+                    try:
+                        if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold):
+                            prices2[f"{colu}"] = ""
+                    except:
+                        pass
+
+            except:
+                pass
+            prices2 = prices2.replace('', np.nan)
+            prices2 = prices2.dropna()
+            now_mean_zero = prices2.mean()
+
+            try:
+                for colu in prices2.index:
+                    try:
+                        if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > secondary_alarm_treshold):
+                            prices2[f"{colu}"] = ""
+                    except:
+                        pass
+            except:
+                pass
+            prices2 = prices2.replace('', np.nan)
+            prices2 = prices2.dropna()
+            now_mean_zero = prices2.mean()
+        except Exception as e:
+            prices2 = ""
+            print('after ERROR 5', e)
+
+        price2=pd.concat([prices2,prices2_5],axis=0)
 
 
 
@@ -1766,26 +1842,8 @@ while True:
         except:
             print('ERROR 8')
 
-        #
-        # if n==1:
-        #     prices3 = prices.copy()
-        #     n2=0
-        # try:
-        #     price_check=pd.concat([prices,prices3],axis=1).T
-        #     price_check=price_check.replace("",np.nan).dropna(axis=1).pct_change().iloc[-1] * 100
-        #     price_check=price_check[abs(price_check) >= 20]
-        #     for i in price_check.index:
-        #         price_drop=i
-        #         n2=n+30
-        #     if n2 > n:
-        #         prices[f'{price_drop}'] = ""
-        #         week_mean[f"{colu}"] = ""
-        #         month_mean[f"{colu}"] = ""
-        #         days_history_24[f"{colu}"] = ""
-        #         hours_history_1[f"{colu}"] = ""
-        # except Exception as e:
-        #     print('price_check, ',e)
-        # prices3=prices.copy()
+
+
 
         try:
             week_mean = week_mean.replace('', np.nan)
@@ -1808,29 +1866,17 @@ while True:
             print('ERROR 8')
 
 
-        try:
-            now_mean = prices.iloc[:-4].mean()
-        except:
-            print('ERROR 5')
-            try:
-                prices2 = prices.copy()
-                prices2 = prices2.iloc[:-4]
-                prices2 = prices2.replace('', np.nan)
-                prices2 = prices2.dropna()
-                now_mean = prices2.mean()
-            except Exception as e:
-                prices2 = ""
-                print('after ERROR 5', e)
+
         try:
             prices4=prices.copy()
             for colu in prices4.iloc[:-4].index:
                 try:
-                    if ((abs((prices4[f"{colu}"]-now_mean)/now_mean*100)>alarm_treshold )
-                    or (abs((week_mean[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > alarm_treshold)
-                    or (abs((month_mean[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > alarm_treshold)
-                    or (abs((days_history_24[f"{colu}"] - days_history_24mean) / days_history_24mean * 100) > alarm_treshold)
-                    or (abs((hours_history_1[f"{colu}"] - hours_history_1mean) / hours_history_1mean * 100) > alarm_treshold)):
-                        if colu!='estjt':
+                    if ((abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>alarm_treshold )
+                    or (abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > alarm_treshold)
+                    or (abs((month_mean_copy[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > alarm_treshold)
+                    or (abs((days_history_24_copy[f"{colu}"] - days_history_24mean) / days_history_24mean * 100) > alarm_treshold)
+                    or (abs((hours_history_1_copy[f"{colu}"] - hours_history_1mean) / hours_history_1mean * 100) > alarm_treshold)):
+                        # if colu!='estjt':
                             prices4[f"{colu}"]=""
                             week_mean[f"{colu}"] = ""
                             month_mean[f"{colu}"] = ""
@@ -1849,6 +1895,7 @@ while True:
             prices2 = prices2.dropna()
             now_mean = prices2.mean()
         except:
+            now_mean=now_mean_zero
             pass
 
         try:
