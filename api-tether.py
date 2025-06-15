@@ -688,7 +688,7 @@ def wallex(url_wallex, prices, names):
 def tabdeal(url_tabdeal, prices, names):
     try:
         names.append('tabdeal')
-        response = requests.get(url_tabdeal,verify=False, timeout=15)
+        response = requests.get(url_tabdeal,verify=False, timeout=7)
         data = response.json()
         x = next((item for item in data if item['name'] == 'TetherUS'), None)
         tabdeal_price = int(x['markets'][0]['price'])
@@ -703,7 +703,7 @@ def tabdeal(url_tabdeal, prices, names):
 def ramzinex(url_ramzinex, prices, names):
     try:
         names.append('ramzinex')
-        response = requests.get(url_ramzinex,verify=False, timeout=15)
+        response = requests.get(url_ramzinex,verify=False, timeout=10)
         data = json.loads(response.text)
         ramzinex_price = data['close']
         if len(str(ramzinex_price)) < 6:
@@ -718,7 +718,7 @@ def ramzinex(url_ramzinex, prices, names):
 def exir(url_exir, prices, names):
     try:
         names.append('exir')
-        response = requests.get(url_exir,verify=False, timeout=15)
+        response = requests.get(url_exir,verify=False, timeout=7)
         data = response.json()
         exir_price = data['close']
         exir_price = int((int(exir_price)) * 10)
@@ -733,7 +733,7 @@ def tetherland(url_tetherland, prices, names):
     try:
         names.append('tetherland')
         headers = {"Accept": "application/json"}
-        response = requests.get(url_tetherland, headers=headers,verify=False, timeout=15)
+        response = requests.get(url_tetherland, headers=headers,verify=False, timeout=10)
         data = response.json()
         tetherland_price = data['data']['currencies']['USDT']['price']
         tetherland_price = int((int(tetherland_price)) * 10)
@@ -746,7 +746,7 @@ def tetherland(url_tetherland, prices, names):
 def ok_ex(url_ok_ex, prices, names):
     try:
         names.append('ok_ex')
-        response = requests.get(url_ok_ex,verify=False, timeout=15)
+        response = requests.get(url_ok_ex,verify=False, timeout=7)
         data = response.json()
         ok_ex_price = data['tickers'][0]['last']
         ok_ex_price = (re.sub(r"\D", "", ok_ex_price))
@@ -806,7 +806,7 @@ async def ap(url_ap, prices, names):
 def bitpin(url_bitpin, prices, names):
     try:
         names.append('bitpin')
-        response = requests.get(url_bitpin,verify=False, timeout=15)
+        response = requests.get(url_bitpin,verify=False, timeout=7)
         data = response.json()
         eigen_usdt_data = next((item for item in data if item['symbol'] == 'USDT_IRT'), None)
         bitpin_price = eigen_usdt_data['price']
@@ -841,8 +841,8 @@ def getting_data():
         url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
         url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"
         url_exir = "11111111111111111111https://api.exir.io/v2/ticker?symbol=usdt-irt"
-        url_tetherland = "https://api.tetherland.com/currencies"
-        url_ok_ex = "111111111111https://azapi.ok-ex.io/oapi/v1/market/tickers"
+        url_tetherland = "1111111111https://api.tetherland.com/currencies"
+        url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
         url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
