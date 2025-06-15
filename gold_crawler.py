@@ -25,8 +25,8 @@ day_change=False
 hour_change=False
 alarm = 1
 alarm_treshold=5
-primary_alarm_treshold=30
-secondary_alarm_treshold=10
+primary_alarm_treshold=50
+secondary_alarm_treshold=20
 
 # if need to send message to test chanel
 test = True
@@ -1291,6 +1291,7 @@ def getting_data():
             prices = prices.replace('', 0)
             prices = prices.astype(float)
             prices = prices.replace(0, "")
+            price=pd.DataFrame(prices)
         except:
             print('ERROR 2')
 
@@ -1682,12 +1683,8 @@ while True:
         sleep = 60 * n
 
 
-        with ThreadPoolExecutor() as executor:
-            future = executor.submit(getting_data)
-            try:
-                prices, dollar_based_price_copy, dublicate_estjt, dublicate_ounce, dublicate_coin=future.result(timeout=120)  # Set timeout to 5 seconds
-            except TimeoutError:
-                print("Timeout occurred")
+
+        prices, dollar_based_price_copy, dublicate_estjt, dublicate_ounce, dublicate_coin=getting_data()# Set timeout to 5 seconds
 
         # getting time date to store
         try:
@@ -1756,10 +1753,6 @@ while True:
                     week_mean_copy = week_mean.copy()
                     days_history_24_copy = days_history_24.copy()
                     hours_history_1_copy = hours_history_1.copy()
-                    month_mean = month_mean.copy()
-                    week_mean = week_mean.copy()
-                    days_history_24 = days_history_24.copy()
-                    hours_history_1 = hours_history_1.copy()
                     day_change = True
                     jalali_date_last =  day
             else:
@@ -1806,6 +1799,10 @@ while True:
                     try:
                         if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold):
                             prices2[f"{colu}"] = ""
+                            week_mean[f"{colu}"] = ""
+                            month_mean[f"{colu}"] = ""
+                            days_history_24[f"{colu}"] = ""
+                            hours_history_1[f"{colu}"] = ""
                     except:
                         pass
 
@@ -1820,6 +1817,10 @@ while True:
                     try:
                         if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > secondary_alarm_treshold):
                             prices2[f"{colu}"] = ""
+                            week_mean[f"{colu}"] = ""
+                            month_mean[f"{colu}"] = ""
+                            days_history_24[f"{colu}"] = ""
+                            hours_history_1[f"{colu}"] = ""
                     except:
                         pass
             except:
@@ -1835,16 +1836,7 @@ while True:
 
 
 
-        try:
-            days_history_week_mean = week_mean.iloc[:-5].mean()
-            days_history_month_mean = month_mean.iloc[:-5].mean()
-        except:
-            print('ERROR 7')
-        try:
-            days_history_24mean = days_history_24.iloc[:-5].mean()
-            hours_history_1mean = hours_history_1.iloc[:-5].mean()
-        except:
-            print('ERROR 8')
+
 
 
 
@@ -1875,6 +1867,12 @@ while True:
             prices4=prices.copy()
             for colu in prices4.iloc[:-4].index:
                 try:
+                    print(abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100))
+                    print(abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100))
+                    print(abs((month_mean_copy[f"{colu}"] - days_history_month_mean)/days_history_month_mean * 100))
+                    print(abs((days_history_24_copy[f"{colu}"] - days_history_24mean)/days_history_24mean * 100) )
+                    print(abs((hours_history_1_copy[f"{colu}"] - hours_history_1mean)/hours_history_1mean * 100))
+
                     if ((abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>alarm_treshold )
                     or (abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > alarm_treshold)
                     or (abs((month_mean_copy[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > alarm_treshold)
