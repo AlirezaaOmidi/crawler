@@ -1088,13 +1088,9 @@ while True:
         # set time intervals
         sleep = 60 * n
 
-        with ThreadPoolExecutor() as executor:
-            future = executor.submit(getting_data)
-            try:
-                prices=future.result(timeout=120)
-            except TimeoutError:
-                print("Timeout occurred")
-        # getting time date to store
+        prices=getting_data()
+        print(prices)
+
         try:
             time_next, jalali_date, Times_hour, Times_min, df_jalalidate,day = time_function(n, time_start, sleep)
             print(time_next, jalali_date, Times_hour, Times_min, df_jalalidate,day)
