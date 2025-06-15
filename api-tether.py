@@ -849,15 +849,25 @@ def getting_data():
         url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
+            print(prices)
             prices, names = wallex(url_wallex, prices, names)
+            print(prices)
             prices, names = tabdeal(url_tabdeal, prices, names)
+            print(prices)
             prices, names = ramzinex(url_ramzinex, prices, names)
+            print(prices)
             prices, names = exir(url_exir, prices, names)
+            print(prices)
             prices, names = tetherland(url_tetherland, prices, names)
+            print(prices)
             prices, names = ok_ex(url_ok_ex, prices, names)
+            print(prices)
             prices, names = aban(url_aban, prices, names)
+            print(prices)
             prices, names = asyncio.run(ap(url_ap, prices, names))
+            print(prices)
             prices, names = bitpin(url_bitpin, prices, names)
+            print(prices)
             prices = pd.Series(prices)
             prices.index = names
         except Exception as e:
@@ -1087,6 +1097,7 @@ while True:
         print("Try")
         # set time intervals
         sleep = 60 * n
+        print(sleep)
 
         prices=getting_data()
         print(prices)
