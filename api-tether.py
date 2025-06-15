@@ -836,7 +836,7 @@ def getting_data():
         prices = []
         names = []
         # source data address
-        url_nobitex = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rlsxxxxxxxxxxxxxxxxxxxxxx"
+        url_nobitex = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
         url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN"
         url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
         url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"
@@ -1097,6 +1097,7 @@ while True:
         # getting time date to store
         try:
             time_next, jalali_date, Times_hour, Times_min, df_jalalidate,day = time_function(n, time_start, sleep)
+            print(time_next, jalali_date, Times_hour, Times_min, df_jalalidate,day)
         except Exception as e:
             print(e)
             print("ERROR 6")
@@ -1116,6 +1117,7 @@ while True:
                     hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
                     jalali_date_last = day
+                    print(days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time)
                 except:
                     Times_hour_last = Times_hour
                     jalali_date_last =  day
@@ -1197,9 +1199,11 @@ while True:
 
 
         try:
+            print(prices)
             prices2 = prices.copy()
             prices2 = prices2.replace('', np.nan)
             prices2 = prices2.dropna()
+            print(prices)
             now_mean_zero = prices2.mean()
             print(now_mean_zero)
         except:
