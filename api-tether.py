@@ -1407,7 +1407,7 @@ while True:
         except:
             print('ERROR 16')
 
-        prices = pd.DataFrame(prices).T
+        # prices = pd.DataFrame(prices).T
 
         prices.insert(0, 'time', Times_min)
         prices.insert(0, 'hour', Times_hour)
