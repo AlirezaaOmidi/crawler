@@ -878,7 +878,7 @@ def getting_data():
             prices = prices.replace(0, "")
         except:
             print('ERROR 2')
-        prices = pd.DataFrame(prices)
+        price= pd.DataFrame(prices)
         return prices.T
     except:
         prices = pd.DataFrame(prices)
@@ -1407,7 +1407,7 @@ while True:
         except:
             print('ERROR 16')
 
-        # prices = pd.DataFrame(prices).T
+        prices = pd.DataFrame(prices).T
 
         prices.insert(0, 'time', Times_min)
         prices.insert(0, 'hour', Times_hour)
