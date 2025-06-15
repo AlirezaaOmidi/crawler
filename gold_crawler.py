@@ -1836,11 +1836,6 @@ while True:
 
 
 
-
-
-
-
-
         try:
             week_mean = week_mean.replace('', np.nan)
             week_mean = week_mean.dropna()
@@ -1867,11 +1862,6 @@ while True:
             prices4=prices.copy()
             for colu in prices4.iloc[:-4].index:
                 try:
-                    print(abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100))
-                    print(abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100))
-                    print(abs((month_mean_copy[f"{colu}"] - days_history_month_mean)/days_history_month_mean * 100))
-                    print(abs((days_history_24_copy[f"{colu}"] - days_history_24mean)/days_history_24mean * 100) )
-                    print(abs((hours_history_1_copy[f"{colu}"] - hours_history_1mean)/hours_history_1mean * 100))
 
                     if ((abs((prices4[f"{colu}"]-now_mean_zero)/now_mean_zero*100)>alarm_treshold )
                     or (abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > alarm_treshold)

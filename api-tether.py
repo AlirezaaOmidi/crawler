@@ -878,7 +878,7 @@ def getting_data():
             prices = prices.replace(0, "")
         except:
             print('ERROR 2')
-
+        prices = pd.DataFrame(prices)
         return prices.T
     except:
         prices = pd.DataFrame(prices)
@@ -1219,6 +1219,10 @@ while True:
                     try:
                         if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold):
                             prices2[f"{colu}"] = ""
+                            week_mean[f"{colu}"] = ""
+                            month_mean[f"{colu}"] = ""
+                            days_history_24[f"{colu}"] = ""
+                            hours_history_1[f"{colu}"] = ""
                     except:
                         pass
 
@@ -1232,6 +1236,10 @@ while True:
                     try:
                         if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > secondary_alarm_treshold):
                             prices2[f"{colu}"] = ""
+                            week_mean[f"{colu}"] = ""
+                            month_mean[f"{colu}"] = ""
+                            days_history_24[f"{colu}"] = ""
+                            hours_history_1[f"{colu}"] = ""
                     except:
                         pass
             except:
@@ -1406,6 +1414,11 @@ while True:
         prices.index = pd.Series(df_jalalidate).astype(str)
         jalali_date = str(df_jalalidate)
 
+
+        month_mean = month_mean.copy()
+        week_mean = week_mean.copy()
+        days_history_24 = days_history_24.copy()
+        hours_history_1 = hours_history_1.copy()
 
 
         if n == 1:
