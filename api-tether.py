@@ -836,17 +836,17 @@ def getting_data():
         prices = []
         names = []
         # source data address
-        url_nobitex = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
-        url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN222222222222222"
-        url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/222222222222222222222222"
-        url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/112222222222222222222"
-        url_exir = "https://api.exir.io/v2/ticker?symbol=usdt-irt1111111111111111"
-        url_tetherland = "https://api.tetherland.com/currencies11111111111"
-        url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers111111111111111111"
-        url_aban = 'https://abantether.com/coin/USDT111111111111111111'
+        url_nobitex = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rlsxxxxxxxxxxxxxxxxxxxxxx"
+        url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN"
+        url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
+        url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"
+        url_exir = "https://api.exir.io/v2/ticker?symbol=usdt-irt"
+        url_tetherland = "https://api.tetherland.com/currencies"
+        url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
+        url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
         url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
-        url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/111111111111111111111"
+        url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
             prices, names = wallex(url_wallex, prices, names)
