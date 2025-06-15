@@ -1097,10 +1097,10 @@ while True:
         print("Try")
         # set time intervals
         sleep = 60 * n
-        print(sleep)
+
 
         prices=getting_data()
-        print(prices)
+
 
         try:
             time_next, jalali_date, Times_hour, Times_min, df_jalalidate,day = time_function(n, time_start, sleep)
@@ -1124,7 +1124,6 @@ while True:
                     hours_history_1_copy = hours_history_1.copy()
                     Times_hour_last = Times_hour
                     jalali_date_last = day
-                    print(days_history_24, hours_history_1, month_mean, week_mean,today_max,today_min,highest_time,lowest_time)
                 except:
                     Times_hour_last = Times_hour
                     jalali_date_last =  day
@@ -1206,11 +1205,9 @@ while True:
 
 
         try:
-            print(prices)
             prices2 = prices.copy()
             prices2 = prices2.replace('', np.nan)
             prices2 = prices2.dropna()
-            print(prices)
             now_mean_zero = prices2.mean()
             print(now_mean_zero)
         except:
