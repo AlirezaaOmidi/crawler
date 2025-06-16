@@ -26,9 +26,10 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
+alarm_treshold=2
 primary_alarm_treshold=10
 secondary_alarm_treshold=5
-alarm_treshold=1
+
 
 # if need to send message to test chanel vvv
 test = False
@@ -840,12 +841,12 @@ def getting_data():
         url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN"
         url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
         url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"
-        url_exir = "11111111111111111111https://api.exir.io/v2/ticker?symbol=usdt-irt"
-        url_tetherland = "1111111111https://api.tetherland.com/currencies"
+        url_exir = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111https://api.exir.io/v2/ticker?symbol=usdt-irt"
+        url_tetherland = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111https://api.tetherland.com/currencies"
         url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
-        url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXwss://cryptian.com/ws"
+        url_ap = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxwss://cryptian.com/ws"
         url_bitpin = "https://api.bitpin.ir/api/v1/mkt/tickers/"
         try:
             prices, names = nobitex(url_nobitex, prices, names)
@@ -1138,6 +1139,8 @@ while True:
                 print("test")
                 try:
                     days_history_24, hours_history_1 = history(n)
+                    month_mean_copy = month_mean.copy()
+                    week_mean_copy = week_mean.copy()
                     days_history_24_copy = days_history_24.copy()
                     hours_history_1_copy = hours_history_1.copy()
                 except Exception as e:
@@ -1415,10 +1418,10 @@ while True:
         jalali_date = str(df_jalalidate)
 
 
-        month_mean = month_mean.copy()
-        week_mean = week_mean.copy()
-        days_history_24 = days_history_24.copy()
-        hours_history_1 = hours_history_1.copy()
+        month_mean = month_mean_copy.copy()
+        week_mean = week_mean_copy.copy()
+        days_history_24 = days_history_24_copy.copy()
+        hours_history_1 = hours_history_1_copy.copy()
 
 
         if n == 1:
