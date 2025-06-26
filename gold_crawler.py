@@ -1167,13 +1167,18 @@ def ounce(url_ounce, prices, names):
     return prices,  names, ounce_price, dublicate_ounce
 
 
-def dollar(url_dollar, prices, ounce_price, names):
+def dollar(url_wallex,url_dollar, prices, ounce_price, names):
     try:
         names.append('dollar')
         names.append('dollar_based')
-        response = requests.get(url_dollar,verify=False, timeout=15)
-        data = response.json()
-        dollar_price = data['stats']['usdt-rls']['latest']
+        try:
+            response = requests.get(url_dollar,verify=False, timeout=15)
+            data = response.json()
+            dollar_price = data['stats']['usdt-rls']['latest']
+        except:
+            response = requests.get(url_wallex, verify=False, timeout=15)
+            data = response.json()
+            dollar_price = int(float(data['result']['latestTrades'][0]['price']))
         if len(str(dollar_price)) < 6:
             dollar_price = int((int(dollar_price)) * 10)
 
@@ -1249,6 +1254,7 @@ def getting_data():
         url_talapp = "https://panel.talapp.ir/api/last_price"
         url_bazaretala = "https://bazaretala.com/melted-gold-bar"
         url_talasea = "https://Api.talasea.ir/api/market/getGoldprice"
+        url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN"
         url_tlyn = "https://price.tlyn.ir/api/v1/price"
         url_goldika = "https://goldika.ir/api/public/price"
         url_tgju = "https://www.tgju.org/profile/geram18"
@@ -1281,7 +1287,7 @@ def getting_data():
             prices, names = goldika(url_goldika, prices, names)
             prices, names = bazaretala(url_bazaretala, prices, names)
             prices, names , ounce_price, dublicate_ounce = ounce(url_ounce, prices, names)
-            prices, names , dollar_based_price_copy = dollar(url_dollar, prices, ounce_price, names)
+            prices, names , dollar_based_price_copy = dollar(url_wallex,url_dollar, prices, ounce_price, names)
             prices, names , dublicate_coin = coin(url_estjt, prices, names)
             prices = pd.Series(prices)
             prices.index = names
@@ -1589,9 +1595,15 @@ def sec_func(prices, days_history_24):
 
     try:
         dollar_situ = situ(prices.dollar, days_history_24.dollar)
+
         dollar_dif = np.round(((prices.dollar - days_history_24.dollar) / days_history_24.dollar) * 100, 2)
-        if abs(dollar_dif) < 0.01:
+        if np.isnan(dollar_dif):
             dollar_dif = "0.00"
+        try:
+            if abs(dollar_dif) < 0.01:
+                dollar_dif = "0.00"
+        except:
+            pass
         try:
             dollar_based_situ = situ(prices.dollar_based, days_history_24.dollar_based)
             dollar_based_dif = np.round(
@@ -1603,9 +1615,9 @@ def sec_func(prices, days_history_24):
             dollar_based_dif = ""
     except:
         dollar_situ = emoji.emojize(':radio_button:') + " "
-        dollar_dif = ""
+        dollar_dif = "0.00"
         dollar_based_situ = emoji.emojize(':radio_button:') + " "
-        dollar_based_dif = ""
+        dollar_based_dif = "0.00"
     try:
         dollar_price = int(prices.dollar) / 10
         dollar_price_copy=dollar_price
