@@ -29,7 +29,7 @@ primary_alarm_treshold=50
 secondary_alarm_treshold=20
 
 # if need to send message to test chanel
-test = False
+test = True
 n = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
@@ -2046,10 +2046,10 @@ while True:
         prices.index = pd.Series(df_jalalidate).astype(str)
         jalali_date = str(df_jalalidate)
 
-        month_mean = month_mean.copy()
-        week_mean = week_mean.copy()
-        days_history_24 = days_history_24.copy()
-        hours_history_1 = hours_history_1.copy()
+        month_mean = month_mean_copy.copy()
+        week_mean = week_mean_copy.copy()
+        days_history_24 = days_history_24_copy.copy()
+        hours_history_1 = hours_history_1_copy.copy()
 
 
         if n == 1:
