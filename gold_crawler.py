@@ -24,12 +24,12 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError
 day_change=False
 hour_change=False
 alarm = 1
-alarm_treshold=5
+alarm_treshold=10
 primary_alarm_treshold=50
 secondary_alarm_treshold=20
 
 # if need to send message to test chanel
-test = True
+test = False
 n = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
@@ -1761,6 +1761,31 @@ while True:
             pass
 
 
+
+
+
+        try:
+            week_mean = week_mean.replace('', np.nan)
+            week_mean = week_mean.dropna()
+            month_mean = month_mean.replace('', np.nan)
+            month_mean = month_mean.dropna()
+            days_history_week_mean = week_mean.iloc[:-5].mean()
+            days_history_month_mean = month_mean.iloc[:-5].mean()
+        except:
+            print('ERROR 7')
+
+        try:
+            days_history_24 = days_history_24.replace('', np.nan)
+            days_history_24 = days_history_24.dropna()
+            hours_history_1 = hours_history_1.replace('', np.nan)
+            hours_history_1 = hours_history_1.dropna()
+            days_history_24mean = days_history_24.iloc[:-5].mean()
+            hours_history_1mean = hours_history_1.iloc[:-5].mean()
+        except:
+            print('ERROR 8')
+
+
+
         if n==1:
             prices3 = prices.copy()
             n2=0
@@ -1797,7 +1822,11 @@ while True:
             try:
                 for colu in prices2.index:
                     try:
-                        if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold):
+                        if ((abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > primary_alarm_treshold)
+                            or (abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > primary_alarm_treshold)
+                            or (abs((month_mean_copy[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > primary_alarm_treshold)
+                            or (abs((days_history_24_copy[f"{colu}"] - days_history_24mean) / days_history_24mean * 100) > primary_alarm_treshold)
+                            or (abs((hours_history_1_copy[f"{colu}"] - hours_history_1mean) / hours_history_1mean * 100) > primary_alarm_treshold)):
                             prices2[f"{colu}"] = ""
                             week_mean[f"{colu}"] = ""
                             month_mean[f"{colu}"] = ""
@@ -1815,7 +1844,11 @@ while True:
             try:
                 for colu in prices2.index:
                     try:
-                        if (abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > secondary_alarm_treshold):
+                        if ((abs((prices2[f"{colu}"] - now_mean_zero) / now_mean_zero * 100) > secondary_alarm_treshold)
+                            or (abs((week_mean_copy[f"{colu}"] - days_history_week_mean) / days_history_week_mean * 100) > secondary_alarm_treshold)
+                            or (abs((month_mean_copy[f"{colu}"] - days_history_month_mean) / days_history_month_mean * 100) > secondary_alarm_treshold)
+                            or (abs((days_history_24_copy[f"{colu}"] - days_history_24mean) / days_history_24mean * 100) > secondary_alarm_treshold)
+                            or (abs((hours_history_1_copy[f"{colu}"] - hours_history_1mean) / hours_history_1mean * 100) > secondary_alarm_treshold)):
                             prices2[f"{colu}"] = ""
                             week_mean[f"{colu}"] = ""
                             month_mean[f"{colu}"] = ""
