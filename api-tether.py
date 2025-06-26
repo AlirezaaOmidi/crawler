@@ -842,7 +842,7 @@ def getting_data():
         url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
         url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"
         url_exir = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111https://api.exir.io/v2/ticker?symbol=usdt-irt"
-        url_tetherland = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111https://api.tetherland.com/currencies"
+        url_tetherland = "https://api.tetherland.com/currencies"
         url_ok_ex = "https://azapi.ok-ex.io/oapi/v1/market/tickers"
         url_aban = 'https://abantether.com/coin/USDT'
         url_ap = "wss://cryptian.com/ws"
