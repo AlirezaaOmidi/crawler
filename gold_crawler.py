@@ -1568,10 +1568,10 @@ def sec_func(prices, days_history_24):
         except:
             bazaretala_situ = emoji.emojize(':radio_button:') + " "
             bazaretala_dif = ""
-        rank_list.append(prices.bazaretala)
-        rank_name_list.append('بازارطلا')
-        situ_list.append(bazaretala_situ)
-        rank_dif_list.append(bazaretala_dif)
+        # rank_list.append(prices.bazaretala)
+        # rank_name_list.append('بازارطلا')
+        # situ_list.append(bazaretala_situ)
+        # rank_dif_list.append(bazaretala_dif)
     except:
         pass
 
