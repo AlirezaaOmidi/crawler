@@ -34,6 +34,7 @@ secondary_alarm_treshold=10
 # if need to send message to test chanel vvv
 test = False
 n = 0
+Alarm_send_num=0
 database_tether = 'tether_price_data.db'
 repo_path = os.getcwd()
 tokens = repo_path + '\\' + 'tokens.txt'
@@ -1529,14 +1530,22 @@ while True:
             day_change = False
             hour_change= False
             if Alarm_send == True:
-                send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
-                # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
-                Alarm_send = False
-                positive24 = False
-                positive1 = False
+                if Alarm_send_num>30:
+                    Alarm_send = False
+                    positive24 = False
+                    positive1 = False
+                    Alarm_send_num=0
+                else:
+                    Alarm_send_num = +1
+                    send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
+                    # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
+                    Alarm_send = False
+                    positive24 = False
+                    positive1 = False
+                    Alarm_send_num=0
         except Exception as e:
 
-            print('Sending Alaram failed because', e.message)
+            print('Sending Alarm failed because', e.message)
             traceback.print_exc()
 
         try:

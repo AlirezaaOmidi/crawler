@@ -31,6 +31,8 @@ secondary_alarm_treshold=20
 # if need to send message to test chanel
 test = False
 n = 0
+Alarm_send_ounce_num = 0
+Alarm_send_num = 0
 database_gold = 'gold_price_data.db'
 repo_path = os.getcwd()
 tokens = repo_path + '\\' + 'tokens.txt'
@@ -139,20 +141,17 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
     message = message.replace("]", "")
     message = message.replace("[", "")
     message = message.replace("'", "")
-    try:
-        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
-        config = read_config('tokens.txt')
 
-        TOKEN = config['TOKEN_GOLD']
-        if test:
-            CHAT_ID = config['CHAT_ID_TEST']
-        else:
-            CHAT_ID = config['CHAT_ID_ALARM_gold']
-        # CHAT_ID = config['CHAT_ID_ALARM_gold']
-        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
-    except Exception as e:
-        print("")
-        # print(f"❌ Could not send message: {e}")
+    proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+    config = read_config('tokens.txt')
+
+    TOKEN = config['TOKEN_GOLD']
+    if test:
+        CHAT_ID = config['CHAT_ID_TEST']
+    else:
+        CHAT_ID = config['CHAT_ID_ALARM_gold']
+    # CHAT_ID = config['CHAT_ID_ALARM_gold']
+    asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
 
 
 def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
@@ -192,20 +191,17 @@ def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
     message = message.replace("]", "")
     message = message.replace("[", "")
     message = message.replace("'", "")
-    try:
-        proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
-        config = read_config('tokens.txt')
+    proxy_url = "socks5h://127.0.0.1:1080"  # your SOCKS5 proxy
+    config = read_config('tokens.txt')
 
-        TOKEN = config['TOKEN_GOLD']
-        if test:
-            CHAT_ID = config['CHAT_ID_TEST']
-        else:
-            CHAT_ID = config['CHAT_ID_ALARM_gold']
-        # CHAT_ID = config['CHAT_ID_ALARM_gold']
-        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
-    except Exception as e:
-        print("")
-        # print(f"❌ Could not send message: {e}")
+    TOKEN = config['TOKEN_GOLD']
+    if test:
+        CHAT_ID = config['CHAT_ID_TEST']
+    else:
+        CHAT_ID = config['CHAT_ID_ALARM_gold']
+    # CHAT_ID = config['CHAT_ID_ALARM_gold']
+    asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+
 
 
 def time_function(n, time_start, sleep, ):
@@ -2199,19 +2195,48 @@ while True:
                 traceback.print_exc()
             day_change = False
             hour_change = False
+
+        except Exception as e:
+            print('Sending Alarm failed because', e.message)
+            traceback.print_exc()
+
+        try:
+
             if Alarm_send == True:
-                send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
-                Alarm_send = False
-                positive24 = False
-                positive1 = False
+                if Alarm_send_num>30:
+                    Alarm_send = False
+                    positive24 = False
+                    positive1 = False
+                    Alarm_send_num=0
+                else:
+                    Alarm_send_num=+1
+                    send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highest_price,lowest_price,highest_time,lowest_time,growth_24,growth_1, test)
+                    Alarm_send = False
+                    positive24 = False
+                    positive1 = False
+                    Alarm_send_num=0
+
+
+        except Exception as e:
+            print('Sending gold Alarm failed because', e.message)
+            traceback.print_exc()
+
+        try:
+
             if Alarm_send_ounce == True:
-                send_telegram3(positive24_ounce_price,ounce_price,
-                               ounce_dif, test)
-                Alarm_send_ounce = False
-                positive24_ounce_price = False
+                if Alarm_send_ounce_num>30:
+                    Alarm_send_ounce = False
+                    positive24_ounce_price = False
+                    Alarm_send_ounce_num = 0
+                else:
+                    Alarm_send_ounce_num=+1
+                    send_telegram3(positive24_ounce_price,ounce_price,ounce_dif, test)
+                    Alarm_send_ounce = False
+                    positive24_ounce_price = False
+                    Alarm_send_ounce_num=0
                 # Email(Times_min, df_jalalidate,positive24, positive1, now_mean, pos_last_growth_24, neg_last_growth_24,growth_24,growth_1)
         except Exception as e:
-            print('Sending Alaram failed because', e.message)
+            print('Sending ounce Alarm failed because', e.message)
             traceback.print_exc()
 
         try:
