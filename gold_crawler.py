@@ -185,7 +185,7 @@ def send_telegram3(positive24_ounce_price, ounce_price,ounce_dif, test):
                  f'                     {calendar}  {(jalali_date)}\n\n'
                  f'                           {clock}  {Times_min}\n'
                  f'\n'
-                 f'@alarm_change'
+                 f'@alarm_change_gold'
                  )
 
     # message = message.encode('utf-8')
