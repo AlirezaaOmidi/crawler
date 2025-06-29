@@ -88,7 +88,7 @@ def send_telegram(message, test):
         else:
             TOKEN = config['TOKEN_TETHER']
             CHAT_ID = config['CHAT_ID_TETHER']
-        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+        send_file(TOKEN, CHAT_ID, message,proxy=proxy_url)
     except Exception as e:
         print("")
         # print(f"❌ Could not send message: {e}")
@@ -158,7 +158,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
         else:
             CHAT_ID = config['CHAT_ID_ALARM_tether1111111111111']
         # CHAT_ID = config['CHAT_ID_ALARM_tether']
-        asyncio.run(send_file(TOKEN, CHAT_ID, message,proxy=proxy_url))
+        send_file(TOKEN, CHAT_ID, message,proxy=proxy_url)
     except Exception as e:
         print("")
         # print(f"❌ Could not send message: {e}")
