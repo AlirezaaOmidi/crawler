@@ -156,7 +156,7 @@ def send_telegram2(Times_min, df_jalalidate,positive24,positive1,now_mean,highes
         if test:
             CHAT_ID = config['CHAT_ID_TEST']
         else:
-            CHAT_ID = config['CHAT_ID_ALARM_tether1111111111111']
+            CHAT_ID = config['CHAT_ID_ALARM_tether']
         # CHAT_ID = config['CHAT_ID_ALARM_tether']
         send_file(TOKEN, CHAT_ID, message,proxy=proxy_url)
     except Exception as e:
