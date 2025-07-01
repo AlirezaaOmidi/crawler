@@ -479,7 +479,7 @@ def history(n):
             conn.commit()
             # Execute a query to retrieve the data
 
-        cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
+        cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 80000")  # Assuming 'id' is still your first column
         rows = cur.fetchall()
         column_names = [desc[0] for desc in cur.description]
 
@@ -626,7 +626,7 @@ def history2():
         conn.commit()
         # Execute a query to retrieve the data
 
-    cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 20000")  # Assuming 'id' is still your first column
+    cur.execute("SELECT * FROM gold_data ORDER BY id DESC LIMIT 80000")  # Assuming 'id' is still your first column
     rows = cur.fetchall()
     column_names = [desc[0] for desc in cur.description]
 
