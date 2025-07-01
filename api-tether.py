@@ -1497,7 +1497,8 @@ while True:
                         neg_last_growth_1 = 0
                     if growth_24>pos_last_growth_24:
                         pos_last_growth_24 = growth_24
-                    pos_last_growth_1 = growth_1
+                    if growth_1>0:
+                        pos_last_growth_1 = growth_1
 
 
 
@@ -1514,7 +1515,8 @@ while True:
                         pos_last_growth_1 = 0
                     if growth_24<neg_last_growth_24:
                         neg_last_growth_24 = growth_24
-                    neg_last_growth_1 = growth_1
+                    if growth_1<0:
+                        neg_last_growth_1 = growth_1
                     Alarm_send = True
 
 
