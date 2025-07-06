@@ -1,0 +1,9 @@
+pandas
+requests
+beautifulsoup4
+numpy
+websockets
+psycopg2-binary
+jalali-pandas
+emoji
+python-telegram-bot
