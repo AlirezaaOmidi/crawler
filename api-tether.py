@@ -351,11 +351,11 @@ def sqlData (new_line):
     try:
         # Connect to myuserQL
         conn = psycopg2.connect(
-            dbname='mydb',
-            user='myuser',
-            password='377843',
-            host='localhost',
-            port='5432'
+            dbname=os.getenv('POSTGRES_DB', 'mydb'),
+            user=os.getenv('POSTGRES_USER', 'myuser'),
+            password=os.getenv('POSTGRES_PASSWORD', '377843'),
+            host=os.getenv('POSTGRES_HOST', 'localhost'),
+            port=os.getenv('POSTGRES_PORT', 5432),
         )
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS tether_data
@@ -411,11 +411,11 @@ def history(n):
     try:
         try:
             conn = psycopg2.connect(
-                dbname='mydb',
-                user='myuser',
-                password='377843',
-                host='localhost',
-                port='5432'
+                dbname=os.getenv('POSTGRES_DB', 'mydb'),
+                user=os.getenv('POSTGRES_USER', 'myuser'),
+                password=os.getenv('POSTGRES_PASSWORD', '377843'),
+                host=os.getenv('POSTGRES_HOST', 'localhost'),
+                port=os.getenv('POSTGRES_PORT', 5432),
             )
             cur = conn.cursor()
         except Exception as e:
@@ -550,11 +550,11 @@ def history(n):
 def history2():
     try:
         conn = psycopg2.connect(
-            dbname='mydb',
-            user='myuser',
-            password='377843',
-            host='localhost',
-            port='5432'
+            dbname=os.getenv('POSTGRES_DB', 'mydb'),
+            user=os.getenv('POSTGRES_USER', 'myuser'),
+            password=os.getenv('POSTGRES_PASSWORD', '377843'),
+            host=os.getenv('POSTGRES_HOST', 'localhost'),
+            port=os.getenv('POSTGRES_PORT', 5432),
         )
         cur = conn.cursor()
     except Exception as e:

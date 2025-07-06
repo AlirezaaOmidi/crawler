@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: 377843
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  crawler1:
+    build: .
+    container_name: gold
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: 377843
+      POSTGRES_DB: mydb
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    command: python gold_crawler.py
+    restart: unless-stopped
+
+  crawler2:
+    build: .
+    container_name: tether
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: 377843
+      POSTGRES_DB: mydb
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    command: python api-tether.py
+    restart: unless-stopped
+
+volumes:
+  pgdata:
