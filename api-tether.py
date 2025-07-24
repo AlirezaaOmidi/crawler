@@ -1162,10 +1162,10 @@ while True:
                         commit_message = f'Add file to repository at {df_jalalidate[-1]}'
                         os.chdir(repo_path)
                         # subprocess.run(['git', 'add', file_to_add])
-                        subprocess.run(['git', 'pull'])
-                        subprocess.run(['git', 'add', "--all"])
-                        subprocess.run(['git', 'commit', '-m', commit_message])
-                        subprocess.run(['git', 'push'])
+                        subprocess.run(['git', 'pull'], timeout=60, check=True)
+                        subprocess.run(['git', 'add', "--all"], timeout=60, check=True)
+                        subprocess.run(['git', 'commit', '-m', commit_message], timeout=60, check=True)
+                        subprocess.run(['git', 'push'], timeout=60, check=True)
                 except Exception as e:
                     print('github error, ', e)
                 # The use of checking the time before checking the day is that, getting the last hour information, when the day doesn't change, is on different based than when it does.
