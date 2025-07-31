@@ -838,7 +838,7 @@ def getting_data():
         prices = []
         names = []
         # source data address
-        url_nobitex = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
+        url_nobitex = "https://apiv2.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
         url_wallex = "https://api.wallex.ir/v1/trades?symbol=USDTTMN"
         url_tabdeal = "https://api-web.tabdeal.org/r/plots/currency_prices/"
         url_ramzinex = "https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/chart/statistics-24/11"

@@ -1256,7 +1256,7 @@ def getting_data():
         url_tgju = "https://www.tgju.org/profile/geram18"
         url_estjt = "https://www.estjt.ir/"
         url_ounce = "https://data-asg.goldprice.org/dbXRates/USD"
-        url_dollar = "https://api.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
+        url_dollar = "https://apiv2.nobitex.ir/market/stats?srcCurrency=usdt&dstCurrency=rls"
         url_ap = "wss://cryptian.com/ws"
         url_melli = 'https://melligold.com/buying/selling/price/XAU18/'
         url_wallgold='https://api.wallgold.ir/api/v1/price?side=buy&symbol=GLD_18C_750TMN'
