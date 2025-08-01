@@ -302,7 +302,8 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
 
     # making message based on data
     tether_prices = (f'-------------------     {yellow} {yellow} {yellow}    -------------------\n'
-                        f'در کنار کانال فعلی، در کانال جدید @alarm_change_tether صرفا تغییرات بیش از ۱ درصدی نرخ تتر فرستاده می شود.\n\n'
+                        f'در کنار کانال فعلی، در کانال جدید @alarm_change_tether صرفا تغییرات بیش از ۱ درصدی نرخ تتر فرستاده می شود.\n'
+                        f'-------------------     {yellow} {yellow} {yellow}    -------------------\n\n'
                         f'{dollar} میانگین نرخ دلار:  {now_mean} تومان {growth_24_situ}\n\n'
                      f'{black} حداکثر و حداقل قیمت امروز:\n\n'
                      f'              {up} {highest_price}          AT: {highest_time}\n\n'
