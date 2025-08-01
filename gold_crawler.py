@@ -322,7 +322,7 @@ def message_tel(Times_min, jalali_date, now_mean, rank_name_list, situ_list, ran
 
 
     # making message based on data
-    message = ( f'----------------------        {yellow} {yellow} {yellow}\n'
+    message = ( '-------------------     {yellow} {yellow} {yellow}    -------------------\n'
                 f' در کنار کانال فعلی، در دیگر کانال @alarm_change_gold صرفا تغییرات بیش از ۱ درصدی نرخ طلا و انس جهانی فرستاده می شود.\n\n'
                 f' میانگین نرخ طلا:  {now_mean} تومان {growth_24_situ}\n\n'
                f'{black} حداکثر و حداقل قیمت امروز:\n\n'
